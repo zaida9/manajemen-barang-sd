@@ -3,175 +3,298 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistem Data Barang SD</title>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <title>Sistem Data Barang - SD</title>
 
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #eef3f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
     }
 
-    header {
-      background: #2b6cb0;
+    .layout { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 100%);
       color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
+      padding: 20px;
+      position: fixed;
+      height: 100vh;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
+    .sidebar-header { text-align: center; margin-bottom: 25px; }
+
+    .nav-link {
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .nav-link.active,
+    .nav-link:hover { background: rgba(255,255,255,0.2); }
+
+    .main-content {
+      margin-left: 260px;
+      padding: 25px;
+      width: 100%;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .card {
       background: white;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
     }
 
-    input {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+    .stats { display: flex; gap: 20px; flex-wrap: wrap; }
 
-    button {
-      padding: 10px 15px;
+    .stat-box { flex: 1; min-width: 150px; text-align: center; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+
+    .img-preview { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+
+    .btn {
+      padding: 8px 14px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
     }
 
-    .btn-save { background: #38a169; color: white; }
-    .btn-delete { background: #e53e3e; color: white; }
+    .btn-primary { background: #3b82f6; color: white; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-success { background: #10b981; color: white; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
     }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
+    .modal.active { display: flex; }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
     }
 
-    th { background: #2b6cb0; color: white; }
-
-    img { width: 60px; }
+    input { width: 100%; padding: 8px; margin-top: 6px; margin-bottom: 12px; }
   </style>
 </head>
+
 <body>
+  <div class="layout">
 
-<header>Sistem Pendataan Barang SD</header>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>🏫 SD Negeri</h2>
+        <p>Sistem Barang</p>
+      </div>
 
-<div class="container">
-  <h3>Tambah Data Barang</h3>
+      <a class="nav-link active" onclick="showPage('dashboard', this)">Dashboard</a>
+      <a class="nav-link" onclick="showPage('barang', this)">Data Barang</a>
+    </aside>
 
-  <input type="text" id="kode" placeholder="Kode Barang (otomatis)" readonly />
-  <input type="text" id="nama" placeholder="Nama Barang" />
-  <input type="number" id="jumlah" placeholder="Jumlah Barang" />
-  <input type="file" id="gambar" />
+    <main class="main-content">
 
-  <button class="btn-save" onclick="tambahBarang()">Simpan</button>
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="page active">
+        <div class="card">
+          <h2>Dashboard</h2>
+          <div class="stats">
+            <div class="stat-box">
+              <h3 id="totalBarang">0</h3>
+              <p>Total Barang</p>
+            </div>
+            <div class="stat-box">
+              <h3 id="stokBanyak">0</h3>
+              <p>Stok Banyak</p>
+            </div>
+            <div class="stat-box">
+              <h3 id="stokSedikit">0</h3>
+              <p>Stok Sedikit</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <h3>Data Barang</h3>
+      <!-- DATA BARANG -->
+      <section id="barang" class="page">
+        <div class="card">
+          <h2>Data Barang</h2>
+          <button class="btn btn-primary" onclick="openModal()">+ Tambah</button>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Foto</th>
-        <th>Kode</th>
-        <th>Nama</th>
-        <th>Jumlah</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody id="tabelBarang"></tbody>
-  </table>
-</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Gambar</th>
+                <th>Nama</th>
+                <th>Kode</th>
+                <th>Jumlah</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelBarang"></tbody>
+          </table>
+        </div>
+      </section>
 
-<script>
-  // 🔥 GANTI dengan config Firebase kamu
-  const firebaseConfig = {
-    apiKey: "ISI_API_KEY",
-    authDomain: "ISI_AUTH_DOMAIN",
-    projectId: "ISI_PROJECT_ID",
-    storageBucket: "ISI_STORAGE_BUCKET",
-    messagingSenderId: "ISI_SENDER_ID",
-    appId: "ISI_APP_ID"
-  };
+    </main>
+  </div>
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const storage = firebase.storage();
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3>Form Barang</h3>
 
-  async function generateKode() {
-    const snapshot = await db.collection("barang").get();
-    const nomor = snapshot.size + 1;
-    document.getElementById("kode").value = "BRG-" + String(nomor).padStart(3, '0');
-  }
+      <input type="hidden" id="editId" />
 
-  generateKode();
+      <label>Nama Barang</label>
+      <input type="text" id="nama" />
 
-  async function tambahBarang() {
-    const kode = document.getElementById("kode").value;
-    const nama = document.getElementById("nama").value;
-    const jumlah = document.getElementById("jumlah").value;
-    const file = document.getElementById("gambar").files[0];
+      <label>Kode Barang</label>
+      <input type="text" id="kode" />
 
-    if (!nama || !jumlah || !file) return alert("Lengkapi data!");
+      <label>Jumlah</label>
+      <input type="number" id="jumlah" />
 
-    const ref = storage.ref("barang/" + file.name);
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
+      <label>Gambar Barang</label>
+      <input type="file" id="gambar" accept="image/*" />
 
-    await db.collection("barang").add({ kode, nama, jumlah, url });
+      <button class="btn btn-success" onclick="simpanBarang()">Simpan</button>
+      <button class="btn btn-danger" onclick="closeModal()">Batal</button>
+    </div>
+  </div>
 
-    alert("Barang berhasil ditambahkan");
-    location.reload();
-  }
+  <script>
+    let barang = JSON.parse(localStorage.getItem('barang_sd')) || [];
 
-  function loadBarang() {
-    db.collection("barang").onSnapshot(snapshot => {
-      const tabel = document.getElementById("tabelBarang");
-      tabel.innerHTML = "";
+    function saveToStorage() {
+      localStorage.setItem('barang_sd', JSON.stringify(barang));
+    }
 
-      snapshot.forEach(doc => {
-        const b = doc.data();
+    function showPage(id, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
 
-        tabel.innerHTML += `
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      el.classList.add('active');
+
+      render();
+    }
+
+    function openModal(id = null) {
+      document.getElementById('modal').classList.add('active');
+
+      if (id) {
+        const b = barang.find(x => x.id === id);
+        editId.value = b.id;
+        nama.value = b.nama;
+        kode.value = b.kode;
+        jumlah.value = b.jumlah;
+      } else {
+        editId.value = '';
+        nama.value = '';
+        kode.value = '';
+        jumlah.value = '';
+        gambar.value = '';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function simpanBarang() {
+      const id = editId.value;
+
+      if (!nama.value || !kode.value || !jumlah.value) {
+        alert('Isi semua data!');
+        return;
+      }
+
+      const file = gambar.files[0];
+
+      function simpanDenganGambar(imgData) {
+        if (id) {
+          const i = barang.findIndex(x => x.id == id);
+          barang[i] = { id: Number(id), nama: nama.value, kode: kode.value, jumlah: Number(jumlah.value), gambar: imgData || barang[i].gambar };
+        } else {
+          barang.push({
+            id: Date.now(),
+            nama: nama.value,
+            kode: kode.value,
+            jumlah: Number(jumlah.value),
+            gambar: imgData || ''
+          });
+        }
+
+        saveToStorage();
+        closeModal();
+        render();
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => simpanDenganGambar(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        simpanDenganGambar(null);
+      }
+    }
+
+    function hapusBarang(id) {
+      if (!confirm('Hapus barang ini?')) return;
+
+      barang = barang.filter(x => x.id !== id);
+      saveToStorage();
+      render();
+    }
+
+    function render() {
+      const tbody = document.getElementById('tabelBarang');
+      tbody.innerHTML = '';
+
+      barang.forEach(b => {
+        tbody.innerHTML += `
           <tr>
-            <td><img src="${b.url}" /></td>
-            <td>${b.kode}</td>
+            <td>${b.gambar ? `<img src="${b.gambar}" class="img-preview">` : '-'}</td>
             <td>${b.nama}</td>
+            <td>${b.kode}</td>
             <td>${b.jumlah}</td>
             <td>
-              <button class="btn-delete" onclick="hapusBarang('${doc.id}')">Hapus</button>
+              <button class="btn btn-primary" onclick="openModal(${b.id})">Edit</button>
+              <button class="btn btn-danger" onclick="hapusBarang(${b.id})">Hapus</button>
             </td>
           </tr>
         `;
       });
-    });
-  }
 
-  async function hapusBarang(id) {
-    if (!confirm("Yakin hapus?") ) return;
-    await db.collection("barang").doc(id).delete();
-  }
+      totalBarang.textContent = barang.length;
+      stokBanyak.textContent = barang.filter(b => b.jumlah > 10).length;
+      stokSedikit.textContent = barang.filter(b => b.jumlah <= 10).length;
+    }
 
-  loadBarang();
-</script>
-
+    render();
+  </script>
 </body>
 </html>
