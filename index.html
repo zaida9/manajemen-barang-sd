@@ -169,21 +169,42 @@ function showPage(id){
 }
 
 function tambahBarang(){
-  if(!nama.value||!jumlah.value) return alert('Lengkapi data');
+  if(!nama.value || !jumlah.value) return alert('Lengkapi data');
 
-  const file=gambar.files[0];
+  const file = gambar.files[0];
 
-  if(file){
-    const reader=new FileReader();
-    reader.onload=e=>{
-      barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:e.target.result});
-      simpan();
-      nama.value=jumlah.value='';
-      gambar.value='';
-      render();
-    };
-    reader.readAsDataURL(file);
+  // kalau tidak pilih gambar → tetap bisa simpan
+  if(!file){
+    barang.push({
+      kode: kodeOtomatis(),
+      nama: nama.value,
+      jumlah: parseInt(jumlah.value),
+      gambar: ""
+    });
+    simpan();
+    nama.value = jumlah.value = "";
+    render();
+    return;
   }
+
+  // kalau ADA gambar → ubah ke base64 dulu
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    barang.push({
+      kode: kodeOtomatis(),
+      nama: nama.value,
+      jumlah: parseInt(jumlah.value),
+      gambar: e.target.result   // ← ini yang bikin gambar muncul
+    });
+
+    simpan();
+    nama.value = jumlah.value = "";
+    gambar.value = "";
+    render();
+  };
+
+  reader.readAsDataURL(file);
 }
 
 function render(){
