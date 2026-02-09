@@ -10,68 +10,62 @@
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f4f8;
-      color: #333;
+      background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+      min-height: 100vh;
     }
 
-    .center {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    .center { display: flex; justify-content: center; align-items: center; height: 100vh; }
 
     .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      width: 320px;
+      background: white; padding: 35px; border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 340px; text-align: center;
     }
 
-    input { width: 100%; padding: 10px; margin: 10px 0; }
+    input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; }
 
-    .btn { padding: 10px; border: none; border-radius: 6px; cursor: pointer; width: 100%; }
+    .btn { padding: 12px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; }
     .btn-login { background: #3b82f6; color: white; }
 
     .layout { display: none; min-height: 100vh; }
 
-    .sidebar {
-      width: 220px;
-      background: #1e3a8a;
-      color: white;
-      padding: 20px;
-    }
+    .sidebar { width: 230px; background: #1e3a8a; color: white; padding: 25px 15px; }
+    .nav-link { padding: 10px; margin-bottom: 10px; cursor: pointer; border-radius: 10px; }
+    .nav-link:hover { background: rgba(255,255,255,0.15); }
 
-    .nav-link { display: block; margin: 10px 0; cursor: pointer; }
+    .main { flex: 1; padding: 25px; background: #f1f5f9; }
 
-    .main { flex: 1; padding: 20px; }
+    .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin-bottom: 20px; }
 
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 8px; border-bottom: 1px solid #ddd; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 10px; border-bottom: 1px solid #eee; }
 
-    .img-preview { width: 40px; height: 40px; object-fit: cover; }
+    .img-preview { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; }
+
+    button { padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; margin-right: 5px; }
+    .edit { background: #3b82f6; color: white; }
+    .hapus { background: #ef4444; color: white; }
+    .pinjam { background: #10b981; color: white; }
+
+    #formBox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); align-items: center; justify-content: center; }
+    #formBox .box { background: white; padding: 25px; border-radius: 16px; width: 320px; }
   </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginPage" class="center">
   <div class="login-box">
-    <h2>Login Admin</h2>
+    <h2>🔐 Login Admin</h2>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
     <button class="btn btn-login" onclick="login()">Masuk</button>
-    <p id="loginError" style="color:red; display:none;">Login salah!</p>
+    <p id="loginError" style="color:red; display:none;">Login salah</p>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" class="layout">
-
   <div class="sidebar">
-    <h3>Menu</h3>
+    <h3>🏫 Menu</h3>
     <div class="nav-link" onclick="showPage('dashboard')">Dashboard</div>
     <div class="nav-link" onclick="showPage('barang')">Data Barang</div>
     <div class="nav-link" onclick="logout()">Logout</div>
@@ -79,18 +73,18 @@
 
   <div class="main">
 
-    <div id="dashboard" class="page">
+    <div id="dashboard" class="page card">
       <h2>Dashboard</h2>
       <p>Total Barang: <b id="totalBarang">0</b></p>
     </div>
 
-    <div id="barang" class="page" style="display:none;">
+    <div id="barang" class="page card" style="display:none;">
       <h2>Data Barang</h2>
-      <button onclick="openForm()">+ Tambah</button>
+      <button class="edit" onclick="openForm()">+ Tambah Barang</button>
 
       <table>
         <thead>
-          <tr><th>Gambar</th><th>Nama</th><th>Kode</th><th>Jumlah</th><th>Aksi</th></tr>
+          <tr><th>Nama</th><th>Kode</th><th>Jumlah</th><th>Status</th><th>Gambar</th><th>Aksi</th></tr>
         </thead>
         <tbody id="tabel"></tbody>
       </table>
@@ -99,38 +93,30 @@
   </div>
 </div>
 
-<!-- FORM -->
-<div id="formBox" style="display:none; position:fixed; inset:0; background:#0008; align-items:center; justify-content:center;">
-  <div style="background:white; padding:20px; border-radius:10px; width:300px;">
+<div id="formBox">
+  <div class="box">
     <input type="hidden" id="editId">
     <input id="nama" placeholder="Nama Barang">
-    <input id="kode" placeholder="Kode Barang">
     <input id="jumlah" type="number" placeholder="Jumlah">
     <input id="gambar" type="file" accept="image/*">
 
-    <button onclick="simpan()">Simpan</button>
-    <button onclick="tutupForm()">Batal</button>
+    <button class="edit" onclick="simpan()">Simpan</button>
+    <button class="hapus" onclick="tutupForm()">Batal</button>
   </div>
 </div>
 
 <script>
-// ===== LOGIN SYSTEM =====
 const ADMIN_USER = "admin";
-const ADMIN_PASS = "123";
+const ADMIN_PASS = "lazuardi";
 
 function login() {
   if (username.value === ADMIN_USER && password.value === ADMIN_PASS) {
     localStorage.setItem("login_sd", "true");
     cekLogin();
-  } else {
-    loginError.style.display = "block";
-  }
+  } else loginError.style.display = "block";
 }
 
-function logout() {
-  localStorage.removeItem("login_sd");
-  location.reload();
-}
+function logout() { localStorage.removeItem("login_sd"); location.reload(); }
 
 function cekLogin() {
   if (localStorage.getItem("login_sd") === "true") {
@@ -140,20 +126,17 @@ function cekLogin() {
   }
 }
 
-// ===== DATA =====
 let barang = JSON.parse(localStorage.getItem("barang_sd")) || [];
 
-function simpanStorage() {
-  localStorage.setItem("barang_sd", JSON.stringify(barang));
-}
+function simpanStorage() { localStorage.setItem("barang_sd", JSON.stringify(barang)); }
 
-// ===== PAGE =====
+function kodeOtomatis() { return "SD-" + Date.now().toString().slice(-5); }
+
 function showPage(id) {
   document.querySelectorAll(".page").forEach(p => p.style.display = "none");
   document.getElementById(id).style.display = "block";
 }
 
-// ===== FORM =====
 function openForm(id=null) {
   formBox.style.display = "flex";
 
@@ -161,64 +144,64 @@ function openForm(id=null) {
     const b = barang.find(x=>x.id===id);
     editId.value = b.id;
     nama.value = b.nama;
-    kode.value = b.kode;
     jumlah.value = b.jumlah;
   } else {
     editId.value = "";
-    nama.value = kode.value = jumlah.value = "";
-    gambar.value = "";
+    nama.value = jumlah.value = "";
   }
 }
 
 function tutupForm() { formBox.style.display = "none"; }
 
-// ===== CRUD =====
 function simpan() {
-  if (!nama.value || !kode.value || !jumlah.value) return alert("Lengkapi data");
+  if (!nama.value || !jumlah.value) return alert("Lengkapi data");
 
   const file = gambar.files[0];
 
   function lanjut(img) {
     if (editId.value) {
       const i = barang.findIndex(x=>x.id==editId.value);
-      barang[i] = { ...barang[i], nama:nama.value, kode:kode.value, jumlah:+jumlah.value, gambar: img || barang[i].gambar };
+      barang[i] = { ...barang[i], nama:nama.value, jumlah:+jumlah.value, gambar: img || barang[i].gambar };
     } else {
-      barang.push({ id:Date.now(), nama:nama.value, kode:kode.value, jumlah:+jumlah.value, gambar: img||"" });
+      barang.push({ id:Date.now(), kode:kodeOtomatis(), nama:nama.value, jumlah:+jumlah.value, status:"Tersedia", gambar: img||"" });
     }
 
-    simpanStorage();
-    tutupForm();
-    render();
+    simpanStorage(); tutupForm(); render();
   }
 
-  if (file) {
-    const r = new FileReader();
-    r.onload = e=>lanjut(e.target.result);
-    r.readAsDataURL(file);
-  } else lanjut(null);
+  if (file) { const r = new FileReader(); r.onload = e=>lanjut(e.target.result); r.readAsDataURL(file); }
+  else lanjut(null);
+}
+
+function pinjam(id) {
+  const b = barang.find(x=>x.id===id);
+  if (b.jumlah <= 0) return alert("Stok habis");
+  b.jumlah--;
+  b.status = b.jumlah === 0 ? "Dipinjam" : "Tersedia";
+  simpanStorage(); render();
 }
 
 function hapus(id) {
-  if (!confirm("Hapus?")) return;
+  if (!confirm("Hapus barang?") ) return;
   barang = barang.filter(x=>x.id!==id);
-  simpanStorage();
-  render();
+  simpanStorage(); render();
 }
 
-// ===== RENDER =====
 function render() {
   tabel.innerHTML = "";
 
   barang.forEach(b=>{
     tabel.innerHTML += `
       <tr>
-        <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:"-"}</td>
         <td>${b.nama}</td>
         <td>${b.kode}</td>
         <td>${b.jumlah}</td>
+        <td>${b.status}</td>
+        <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:"-"}</td>
         <td>
-          <button onclick="openForm(${b.id})">Edit</button>
-          <button onclick="hapus(${b.id})">Hapus</button>
+          <button class="pinjam" onclick="pinjam(${b.id})">Pinjam</button>
+          <button class="edit" onclick="openForm(${b.id})">Edit</button>
+          <button class="hapus" onclick="hapus(${b.id})">Hapus</button>
         </td>
       </tr>`;
   });
