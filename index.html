@@ -92,7 +92,7 @@
       <div class="card">
         <h3>Daftar Barang</h3>
         <table>
-          <thead><tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Aksi</th><th>Gambar</th></tr></thead>
+          <thead><tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Gambar</th><th>Aksi</th></tr></thead>
           <tbody id="tabelBarang"></tbody>
         </table>
       </div>
@@ -122,7 +122,7 @@
 
 <script>
 const ADMIN_USER="admin";
-const ADMIN_PASS="123";
+const ADMIN_PASS="lazuardi";
 
 let barang=JSON.parse(localStorage.getItem('barang')||'[]');
 let pinjam=JSON.parse(localStorage.getItem('pinjam')||'[]');
@@ -148,7 +148,7 @@ function cekLogin(){
 }
 
 function kodeOtomatis(){
-  return 'BRG-'+String(barang.length+1).padStart(3,'0');
+  return 'SD-'+String(barang.length+1).padStart(3,'0');
 }
 
 function simpan(){
