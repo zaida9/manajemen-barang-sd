@@ -13,14 +13,12 @@
     *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma}
     body{background:#eef2ff;color:#1e293b}
 
-    /* LOGIN */
     .center{display:flex;justify-content:center;align-items:center;height:100vh}
     .login-box{background:white;padding:35px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.2);width:340px;text-align:center}
     .btn-login{background:#3b82f6;color:white;padding:10px;border:none;border-radius:10px;width:100%;cursor:pointer;margin-top:10px}
 
     input,select{padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%;margin-top:10px}
 
-    /* LAYOUT */
     .layout{display:none;min-height:100vh}
 
     .sidebar{width:250px;background:#1e3a8a;color:white;padding:20px;position:fixed;height:100%}
@@ -97,6 +95,7 @@
 
       <div class="card">
         <h3>Daftar Barang</h3>
+        <button class="btn" onclick="cetakPDF()">Cetak Laporan PDF</button>
         <table>
           <thead><tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Gambar</th><th>Aksi</th></tr></thead>
           <tbody id="tabelBarang"></tbody>
@@ -127,7 +126,6 @@
 </div>
 
 <script>
-// 🔥 CONFIG FIREBASE (PUNYA KAMU)
 const firebaseConfig = {
   apiKey: "AIzaSyAVeXYR1sI6YC9xOVhlBSbf0RFMr9Ams1g",
   authDomain: "inventaris-sd.firebaseapp.com",
@@ -141,7 +139,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// LOGIN
 const ADMIN_USER="admin";
 const ADMIN_PASS="lazuardi";
 
@@ -165,57 +162,42 @@ function cekLogin(){
   }
 }
 
-function kodeOtomatis(id){
-  return 'SD-'+String(id).padStart(3,'0');
-}
-
 function showPage(id){
   ['dashboard','barang','pinjam'].forEach(p=>document.getElementById(p).classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
-
-  document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
-  document.getElementById('menu-'+id)?.classList.add('active');
 }
 
-// TAMBAH BARANG
 async function tambahBarang(){
   if(!nama.value||!jumlah.value) return alert('Lengkapi data');
 
   const file = gambar.files[0];
+  if(!file) return alert('Pilih gambar dulu');
 
   const reader = new FileReader();
   reader.onload = async function(e){
-    const imgBase64 = e.target.result;
-
     const snapshot = await db.collection('barang').get();
-    const kode = kodeOtomatis(snapshot.size+1);
+    const kode = 'SD-'+String(snapshot.size+1).padStart(3,'0');
 
     await db.collection('barang').add({
       kode,
       nama: nama.value,
       jumlah: parseInt(jumlah.value),
-      gambar: imgBase64
+      gambar: e.target.result
     });
 
     nama.value = jumlah.value = gambar.value = '';
   };
-
-  if(file) reader.readAsDataURL(file);
-  else alert('Pilih gambar dulu');
+  reader.readAsDataURL(file);
 }
 
-// LOAD DATA REALTIME
 function loadData(){
-
   db.collection('barang').onSnapshot(snap=>{
     tabelBarang.innerHTML='';
     barangSelect.innerHTML='';
-
-    let total=0;
+    totalBarang.textContent = snap.size;
 
     snap.forEach(doc=>{
       const b = doc.data();
-      total++;
 
       tabelBarang.innerHTML += `
         <tr>
@@ -228,10 +210,7 @@ function loadData(){
 
       barangSelect.innerHTML += `<option value="${doc.id}">${b.nama} (${b.jumlah})</option>`;
     });
-
-    totalBarang.textContent = total;
   });
-
 
   db.collection('pinjam').onSnapshot(snap=>{
     tabelPinjam.innerHTML='';
@@ -239,24 +218,16 @@ function loadData(){
 
     snap.forEach(doc=>{
       const p = doc.data();
-
-      tabelPinjam.innerHTML += `
-        <tr>
-          <td>${p.nama}</td>
-          <td>${p.barang}</td>
-          <td>${p.jumlah}</td>
-        </tr>`;
+      tabelPinjam.innerHTML += `<tr><td>${p.nama}</td><td>${p.barang}</td><td>${p.jumlah}</td></tr>`;
     });
   });
 }
 
-// HAPUS
 async function hapusBarang(id){
   if(!confirm('Hapus barang?')) return;
   await db.collection('barang').doc(id).delete();
 }
 
-// PINJAM
 async function pinjamBarang(){
   const id = barangSelect.value;
   const j = parseInt(jumlahPinjam.value);
@@ -264,8 +235,7 @@ async function pinjamBarang(){
   if(!peminjam.value||!j) return alert('Lengkapi data');
 
   const docRef = db.collection('barang').doc(id);
-  const docSnap = await docRef.get();
-  const data = docSnap.data();
+  const data = (await docRef.get()).data();
 
   if(j > data.jumlah) return alert('Stok tidak cukup');
 
@@ -280,7 +250,30 @@ async function pinjamBarang(){
   peminjam.value = jumlahPinjam.value = '';
 }
 
+async function cetakPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.text("LAPORAN INVENTARIS SEKOLAH", 20, 20);
+
+  let y = 40;
+  const snapshot = await db.collection('barang').get();
+
+  let no = 1;
+  snapshot.forEach(d=>{
+    const b = d.data();
+    doc.text(`${no}. ${b.kode} - ${b.nama} (Jumlah: ${b.jumlah})`, 20, y);
+    y += 10;
+    no++;
+  });
+
+  doc.save("laporan_inventaris.pdf");
+}
+
 cekLogin();
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 </body>
 </html>
