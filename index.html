@@ -36,13 +36,13 @@
     .btn-danger{background:#ef4444;color:white}
     .btn-warning{background:#f59e0b;color:white}
 
-    .img-preview{width:50px;height:50px;object-fit:cover;border-radius:6px}
-
     .hidden{display:none}
 
     .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
     .stat{background:white;padding:20px;border-radius:16px;box-shadow:0 10px 20px rgba(0,0,0,.05);text-align:center}
     .stat h3{font-size:28px;color:#1e3a8a}
+
+    img{width:50px;height:50px;object-fit:cover;border-radius:6px}
   </style>
 </head>
 <body>
@@ -122,12 +122,31 @@
   </div>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAVeXYR1sI6YC9xOVhlBSbf0RFMr9Ams1g",
+  authDomain: "inventaris-sd.firebaseapp.com",
+  projectId: "inventaris-sd",
+  storageBucket: "inventaris-sd.firebasestorage.app",
+  messagingSenderId: "421661627652",
+  appId: "1:421661627652:web:9ae755b3a997b8544e6c51",
+  measurementId: "G-SVNDR0ZRW6"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
+
 const ADMIN_USER="admin";
 const ADMIN_PASS="lazuardi";
 
-let barang=JSON.parse(localStorage.getItem('barang')||'[]');
-let pinjam=JSON.parse(localStorage.getItem('pinjam')||'[]');
+let barang=[];
+let pinjam=[];
 
 function login(){
   if(username.value===ADMIN_USER && password.value===ADMIN_PASS){
@@ -145,17 +164,12 @@ function cekLogin(){
   if(localStorage.getItem('login')==='true'){
     loginPage.style.display='none';
     app.style.display='flex';
-    render();
+    loadData();
   }
 }
 
 function kodeOtomatis(){
   return 'SD-'+String(barang.length+1).padStart(3,'0');
-}
-
-function simpan(){
-  localStorage.setItem('barang',JSON.stringify(barang));
-  localStorage.setItem('pinjam',JSON.stringify(pinjam));
 }
 
 function showPage(id){
@@ -164,47 +178,39 @@ function showPage(id){
 
   document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
   document.getElementById('menu-'+id)?.classList.add('active');
-
-  render();
 }
 
-function tambahBarang(){
+async function tambahBarang(){
   if(!nama.value || !jumlah.value) return alert('Lengkapi data');
 
   const file = gambar.files[0];
+  let urlGambar = "";
 
-  // kalau tidak pilih gambar → tetap bisa simpan
-  if(!file){
-    barang.push({
-      kode: kodeOtomatis(),
-      nama: nama.value,
-      jumlah: parseInt(jumlah.value),
-      gambar: ""
-    });
-    simpan();
-    nama.value = jumlah.value = "";
-    render();
-    return;
+  if(file){
+    const ref = storage.ref("barang/" + Date.now() + "_" + file.name);
+    await ref.put(file);
+    urlGambar = await ref.getDownloadURL();
   }
 
-  // kalau ADA gambar → ubah ke base64 dulu
-  const reader = new FileReader();
+  await db.collection("barang").add({
+    kode: kodeOtomatis(),
+    nama: nama.value,
+    jumlah: parseInt(jumlah.value),
+    gambar: urlGambar
+  });
 
-  reader.onload = function(e){
-    barang.push({
-      kode: kodeOtomatis(),
-      nama: nama.value,
-      jumlah: parseInt(jumlah.value),
-      gambar: e.target.result   // ← ini yang bikin gambar muncul
-    });
+  nama.value = jumlah.value = gambar.value = "";
+  loadData();
+}
 
-    simpan();
-    nama.value = jumlah.value = "";
-    gambar.value = "";
-    render();
-  };
+async function loadData(){
+  const snapBarang = await db.collection("barang").get();
+  barang = snapBarang.docs.map(d => ({id:d.id, ...d.data()}));
 
-  reader.readAsDataURL(file);
+  const snapPinjam = await db.collection("pinjam").get();
+  pinjam = snapPinjam.docs.map(d => d.data());
+
+  render();
 }
 
 function render(){
@@ -212,38 +218,44 @@ function render(){
   totalPinjam.textContent=pinjam.length;
 
   tabelBarang.innerHTML=barang.map((b,i)=>`
-    <tr>
-      <td>${b.kode}</td>
-      <td>${b.nama}</td>
-      <td>${b.jumlah}</td>
-      <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:"-"}</td>
-      <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
-    </tr>`).join('');
+  <tr>
+  <td>${b.kode}</td>
+  <td>${b.nama}</td>
+  <td>${b.jumlah}</td>
+  <td>${b.gambar?`<img src="${b.gambar}">`:"-"}</td>
+  <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
+  </tr>`).join('');
 
   barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`);
 
   tabelPinjam.innerHTML=pinjam.map(p=>`<tr><td>${p.nama}</td><td>${p.barang}</td><td>${p.jumlah}</td></tr>`).join('');
 }
 
-function hapus(i){
+async function hapus(i){
   if(!confirm('Hapus barang?')) return;
-  barang.splice(i,1);
-  simpan();
-  render();
+  await db.collection("barang").doc(barang[i].id).delete();
+  loadData();
 }
 
-function pinjamBarang(){
+async function pinjamBarang(){
   const i=barangSelect.value;
   const j=parseInt(jumlahPinjam.value);
+
   if(!peminjam.value||!j) return alert('Lengkapi data');
   if(j>barang[i].jumlah) return alert('Stok tidak cukup');
 
-  barang[i].jumlah-=j;
-  pinjam.push({nama:peminjam.value,barang:barang[i].nama,jumlah:j});
+  await db.collection("barang").doc(barang[i].id).update({
+    jumlah: barang[i].jumlah - j
+  });
 
-  simpan();
+  await db.collection("pinjam").add({
+    nama:peminjam.value,
+    barang:barang[i].nama,
+    jumlah:j
+  });
+
   peminjam.value=jumlahPinjam.value='';
-  render();
+  loadData();
 }
 
 cekLogin();
