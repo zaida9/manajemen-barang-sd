@@ -87,14 +87,14 @@
         <h3>Tambah Barang</h3>
         <input id="nama" placeholder="Nama barang">
         <input id="jumlah" type="number" placeholder="Jumlah">
-        <input id="gambar" placeholder="URL gambar">
+        <input id="gambar" type="file" accept="image/*">
         <button class="btn" onclick="tambahBarang()">Tambah</button>
       </div>
 
       <div class="card">
         <h3>Daftar Barang</h3>
         <table>
-          <thead><tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Aksi</th><th>Gambar</th></tr></thead>
+          <thead><tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Gambar</th><th>Aksi</th></tr></thead>
           <tbody id="tabelBarang"></tbody>
         </table>
       </div>
@@ -124,7 +124,7 @@
 
 <script>
 const ADMIN_USER="admin";
-const ADMIN_PASS="123";
+const ADMIN_PASS="lazuardi";
 
 let barang=JSON.parse(localStorage.getItem('barang')||'[]');
 let pinjam=JSON.parse(localStorage.getItem('pinjam')||'[]');
@@ -150,7 +150,7 @@ function cekLogin(){
 }
 
 function kodeOtomatis(){
-  return 'BRG-'+String(barang.length+1).padStart(3,'0');
+  return 'SD-'+String(barang.length+1).padStart(3,'0');
 }
 
 function simpan(){
@@ -171,34 +171,35 @@ function showPage(id){
 function tambahBarang(){
   if(!nama.value||!jumlah.value) return alert('Lengkapi data');
 
-  const file = gambar.files[0];
+  const file=gambar.files[0];
 
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(e){
-      barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:e.target.result});
-      simpan();
-      nama.value=jumlah.value=gambar.value='';
-      render();
-    };
-    reader.readAsDataURL(file);
-  }else{
-    barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:''});
+  function lanjut(img){
+    barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:img||''});
     simpan();
-    nama.value=jumlah.value=gambar.value='';
+    nama.value=jumlah.value='';
+    gambar.value='';
     render();
   }
-});
-  simpan();
-  nama.value=jumlah.value=gambar.value='';
-  render();
+
+  if(file){
+    const reader=new FileReader();
+    reader.onload=e=>lanjut(e.target.result);
+    reader.readAsDataURL(file);
+  }else lanjut('');
 }
 
 function render(){
   totalBarang.textContent=barang.length;
   totalPinjam.textContent=pinjam.length;
 
-  tabelBarang.innerHTML=barang.map((b,i)=>`\n    <tr>\n      <td>${b.kode}</td>\n      <td>${b.nama}</td>\n      <td>${b.jumlah}</td>\n      <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>\n      <td>${b.gambar?`<img src='${b.gambar}' width='50'>`:''}</td>\n    </tr>`).join('');
+  tabelBarang.innerHTML=barang.map((b,i)=>`
+  <tr>
+    <td>${b.kode}</td>
+    <td>${b.nama}</td>
+    <td>${b.jumlah}</td>
+    <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:'-'}</td>
+    <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
+  </tr>`).join('');
 
   barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`);
 
