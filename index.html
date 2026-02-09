@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sistem Inventaris SD</title>
 
+  <!-- FIREBASE SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma}
     body{background:#eef2ff;color:#1e293b}
@@ -42,7 +46,7 @@
     .stat{background:white;padding:20px;border-radius:16px;box-shadow:0 10px 20px rgba(0,0,0,.05);text-align:center}
     .stat h3{font-size:28px;color:#1e3a8a}
 
-    img{width:50px;height:50px;object-fit:cover;border-radius:6px}
+    .img-preview{width:50px;height:50px;object-fit:cover;border-radius:8px}
   </style>
 </head>
 <body>
@@ -122,12 +126,8 @@
   </div>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-
 <script>
+// 🔥 CONFIG FIREBASE (PUNYA KAMU)
 const firebaseConfig = {
   apiKey: "AIzaSyAVeXYR1sI6YC9xOVhlBSbf0RFMr9Ams1g",
   authDomain: "inventaris-sd.firebaseapp.com",
@@ -140,13 +140,10 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const storage = firebase.storage();
 
+// LOGIN
 const ADMIN_USER="admin";
 const ADMIN_PASS="lazuardi";
-
-let barang=[];
-let pinjam=[];
 
 function login(){
   if(username.value===ADMIN_USER && password.value===ADMIN_PASS){
@@ -168,8 +165,8 @@ function cekLogin(){
   }
 }
 
-function kodeOtomatis(){
-  return 'SD-'+String(barang.length+1).padStart(3,'0');
+function kodeOtomatis(id){
+  return 'SD-'+String(id).padStart(3,'0');
 }
 
 function showPage(id){
@@ -180,82 +177,107 @@ function showPage(id){
   document.getElementById('menu-'+id)?.classList.add('active');
 }
 
+// TAMBAH BARANG
 async function tambahBarang(){
-  if(!nama.value || !jumlah.value) return alert('Lengkapi data');
+  if(!nama.value||!jumlah.value) return alert('Lengkapi data');
 
   const file = gambar.files[0];
-  let urlGambar = "";
 
-  if(file){
-    const ref = storage.ref("barang/" + Date.now() + "_" + file.name);
-    await ref.put(file);
-    urlGambar = await ref.getDownloadURL();
-  }
+  const reader = new FileReader();
+  reader.onload = async function(e){
+    const imgBase64 = e.target.result;
 
-  await db.collection("barang").add({
-    kode: kodeOtomatis(),
-    nama: nama.value,
-    jumlah: parseInt(jumlah.value),
-    gambar: urlGambar
+    const snapshot = await db.collection('barang').get();
+    const kode = kodeOtomatis(snapshot.size+1);
+
+    await db.collection('barang').add({
+      kode,
+      nama: nama.value,
+      jumlah: parseInt(jumlah.value),
+      gambar: imgBase64
+    });
+
+    nama.value = jumlah.value = gambar.value = '';
+  };
+
+  if(file) reader.readAsDataURL(file);
+  else alert('Pilih gambar dulu');
+}
+
+// LOAD DATA REALTIME
+function loadData(){
+
+  db.collection('barang').onSnapshot(snap=>{
+    tabelBarang.innerHTML='';
+    barangSelect.innerHTML='';
+
+    let total=0;
+
+    snap.forEach(doc=>{
+      const b = doc.data();
+      total++;
+
+      tabelBarang.innerHTML += `
+        <tr>
+          <td>${b.kode}</td>
+          <td>${b.nama}</td>
+          <td>${b.jumlah}</td>
+          <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:'-'}</td>
+          <td><button class='btn-danger' onclick="hapusBarang('${doc.id}')">Hapus</button></td>
+        </tr>`;
+
+      barangSelect.innerHTML += `<option value="${doc.id}">${b.nama} (${b.jumlah})</option>`;
+    });
+
+    totalBarang.textContent = total;
   });
 
-  nama.value = jumlah.value = gambar.value = "";
-  loadData();
+
+  db.collection('pinjam').onSnapshot(snap=>{
+    tabelPinjam.innerHTML='';
+    totalPinjam.textContent = snap.size;
+
+    snap.forEach(doc=>{
+      const p = doc.data();
+
+      tabelPinjam.innerHTML += `
+        <tr>
+          <td>${p.nama}</td>
+          <td>${p.barang}</td>
+          <td>${p.jumlah}</td>
+        </tr>`;
+    });
+  });
 }
 
-async function loadData(){
-  const snapBarang = await db.collection("barang").get();
-  barang = snapBarang.docs.map(d => ({id:d.id, ...d.data()}));
-
-  const snapPinjam = await db.collection("pinjam").get();
-  pinjam = snapPinjam.docs.map(d => d.data());
-
-  render();
-}
-
-function render(){
-  totalBarang.textContent=barang.length;
-  totalPinjam.textContent=pinjam.length;
-
-  tabelBarang.innerHTML=barang.map((b,i)=>`
-  <tr>
-  <td>${b.kode}</td>
-  <td>${b.nama}</td>
-  <td>${b.jumlah}</td>
-  <td>${b.gambar?`<img src="${b.gambar}">`:"-"}</td>
-  <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
-  </tr>`).join('');
-
-  barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`);
-
-  tabelPinjam.innerHTML=pinjam.map(p=>`<tr><td>${p.nama}</td><td>${p.barang}</td><td>${p.jumlah}</td></tr>`).join('');
-}
-
-async function hapus(i){
+// HAPUS
+async function hapusBarang(id){
   if(!confirm('Hapus barang?')) return;
-  await db.collection("barang").doc(barang[i].id).delete();
-  loadData();
+  await db.collection('barang').doc(id).delete();
 }
 
+// PINJAM
 async function pinjamBarang(){
-  const i=barangSelect.value;
-  const j=parseInt(jumlahPinjam.value);
+  const id = barangSelect.value;
+  const j = parseInt(jumlahPinjam.value);
 
   if(!peminjam.value||!j) return alert('Lengkapi data');
-  if(j>barang[i].jumlah) return alert('Stok tidak cukup');
 
-  await db.collection("barang").doc(barang[i].id).update({
-    jumlah: barang[i].jumlah - j
+  const docRef = db.collection('barang').doc(id);
+  const docSnap = await docRef.get();
+  const data = docSnap.data();
+
+  if(j > data.jumlah) return alert('Stok tidak cukup');
+
+  await docRef.update({ jumlah: data.jumlah - j });
+
+  await db.collection('pinjam').add({
+    nama: peminjam.value,
+    barang: data.nama,
+    jumlah: j
   });
 
-  await db.collection("pinjam").add({
-    nama:peminjam.value,
-    barang:barang[i].nama,
-    jumlah:j
-  });
-
-  peminjam.value=jumlahPinjam.value='';
-  loadData();
+  peminjam.value = jumlahPinjam.value = '';
 }
 
 cekLogin();
