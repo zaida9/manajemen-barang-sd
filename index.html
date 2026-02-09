@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Data Barang SD</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #eef3f8;
+    }
+
+    header {
+      background: #2b6cb0;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-save { background: #38a169; color: white; }
+    .btn-delete { background: #e53e3e; color: white; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th { background: #2b6cb0; color: white; }
+
+    img { width: 60px; }
+  </style>
+</head>
+<body>
+
+<header>Sistem Pendataan Barang SD</header>
+
+<div class="container">
+  <h3>Tambah Data Barang</h3>
+
+  <input type="text" id="kode" placeholder="Kode Barang (otomatis)" readonly />
+  <input type="text" id="nama" placeholder="Nama Barang" />
+  <input type="number" id="jumlah" placeholder="Jumlah Barang" />
+  <input type="file" id="gambar" />
+
+  <button class="btn-save" onclick="tambahBarang()">Simpan</button>
+
+  <h3>Data Barang</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Foto</th>
+        <th>Kode</th>
+        <th>Nama</th>
+        <th>Jumlah</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelBarang"></tbody>
+  </table>
+</div>
+
+<script>
+  // 🔥 GANTI dengan config Firebase kamu
+  const firebaseConfig = {
+    apiKey: "ISI_API_KEY",
+    authDomain: "ISI_AUTH_DOMAIN",
+    projectId: "ISI_PROJECT_ID",
+    storageBucket: "ISI_STORAGE_BUCKET",
+    messagingSenderId: "ISI_SENDER_ID",
+    appId: "ISI_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  async function generateKode() {
+    const snapshot = await db.collection("barang").get();
+    const nomor = snapshot.size + 1;
+    document.getElementById("kode").value = "BRG-" + String(nomor).padStart(3, '0');
+  }
+
+  generateKode();
+
+  async function tambahBarang() {
+    const kode = document.getElementById("kode").value;
+    const nama = document.getElementById("nama").value;
+    const jumlah = document.getElementById("jumlah").value;
+    const file = document.getElementById("gambar").files[0];
+
+    if (!nama || !jumlah || !file) return alert("Lengkapi data!");
+
+    const ref = storage.ref("barang/" + file.name);
+    await ref.put(file);
+    const url = await ref.getDownloadURL();
+
+    await db.collection("barang").add({ kode, nama, jumlah, url });
+
+    alert("Barang berhasil ditambahkan");
+    location.reload();
+  }
+
+  function loadBarang() {
+    db.collection("barang").onSnapshot(snapshot => {
+      const tabel = document.getElementById("tabelBarang");
+      tabel.innerHTML = "";
+
+      snapshot.forEach(doc => {
+        const b = doc.data();
+
+        tabel.innerHTML += `
+          <tr>
+            <td><img src="${b.url}" /></td>
+            <td>${b.kode}</td>
+            <td>${b.nama}</td>
+            <td>${b.jumlah}</td>
+            <td>
+              <button class="btn-delete" onclick="hapusBarang('${doc.id}')">Hapus</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+  }
+
+  async function hapusBarang(id) {
+    if (!confirm("Yakin hapus?") ) return;
+    await db.collection("barang").doc(id).delete();
+  }
+
+  loadBarang();
+</script>
+
+</body>
+</html>
