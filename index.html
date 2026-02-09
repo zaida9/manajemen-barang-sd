@@ -85,7 +85,7 @@
         <h3>Tambah Barang</h3>
         <input id="nama" placeholder="Nama barang">
         <input id="jumlah" type="number" placeholder="Jumlah">
-        <input id="gambar" placeholder="URL gambar">
+        <input id="gambar" type="file" accept="image/*">
         <button class="btn" onclick="tambahBarang()">Tambah</button>
       </div>
 
@@ -179,7 +179,14 @@ function render(){
   totalBarang.textContent=barang.length;
   totalPinjam.textContent=pinjam.length;
 
-  tabelBarang.innerHTML=barang.map((b,i)=>`\n    <tr>\n      <td>${b.kode}</td>\n      <td>${b.nama}</td>\n      <td>${b.jumlah}</td>\n      <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>\n      <td>${b.gambar?`<img src='${b.gambar}' width='50'>`:''}</td>\n    </tr>`).join('');
+  tabelBarang.innerHTML=barang.map((b,i)=>`\n    
+  <tr>\n      
+  <td>${b.kode}</td>\n      
+  <td>${b.nama}</td>\n      
+  <td>${b.jumlah}</td>\n   
+  <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:"-"}</td>\n   
+  <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>\n          
+  </tr>`).join('');
 
   barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`);
 
