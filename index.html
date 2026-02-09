@@ -4,37 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sistem Inventaris SD</title>
+
   <style>
-    
     *{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,Tahoma}
     body{background:#eef2ff;color:#1e293b}
 
-    .layout{display:flex;min-height:100vh}
+    /* LOGIN */
+    .center{display:flex;justify-content:center;align-items:center;height:100vh}
+    .login-box{background:blue;padding:35px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.2);width:340px;text-align:center}
+    .btn-login{background:#3b82f6;color:blue;padding:10px;border:none;border-radius:10px;width:100%;cursor:pointer;margin-top:10px}
 
-        .center{
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-    }
-    
-    .login-box{
-      background:white;
-      padding:35px;
-      border-radius:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.2);
-      width:340px;
-      text-align:center;
-    }
+    input,select{padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%;margin-top:10px}
 
+    /* LAYOUT */
+    .layout{display:none;min-height:100vh}
 
-    /* SIDEBAR */
     .sidebar{width:250px;background:#1e3a8a;color:white;padding:20px;position:fixed;height:100%}
     .sidebar h2{margin-bottom:25px}
-    .menu a{display:block;color:white;text-decoration:none;padding:12px;border-radius:10px;margin-bottom:8px}
+    .menu a{display:block;color:white;text-decoration:none;padding:12px;border-radius:10px;margin-bottom:8px;cursor:pointer}
     .menu a:hover,.menu a.active{background:rgba(255,255,255,.2)}
 
-    /* CONTENT */
     .content{margin-left:250px;padding:30px;width:100%}
     .card{background:white;border-radius:16px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.05);margin-bottom:20px}
 
@@ -47,7 +36,6 @@
     .btn-danger{background:#ef4444;color:white}
     .btn-warning{background:#f59e0b;color:white}
 
-    input,select{padding:8px;border:1px solid #cbd5e1;border-radius:8px;width:100%}
     .hidden{display:none}
 
     .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
@@ -57,21 +45,20 @@
 </head>
 <body>
 
-<div class="layout">
-
-
-    <!-- LOGIN PAGE -->
-  <div id="loginPage" class="center">
-    <div class="login-box">
-      <h2>🔐 Login Admin</h2>
-      <input type="text" id="username" placeholder="Username">
-      <input type="password" id="password" placeholder="Password">
-      <button class="btn-login" onclick="login()">Masuk</button>
-      <p id="loginError" style="color:red;display:none;margin-top:8px">Login salah</p>
-    </div>
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="center">
+  <div class="login-box">
+    <h2>🔐 Login Admin</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn-login" onclick="login()">Masuk</button>
+    <p id="loginError" style="color:red;display:none;margin-top:8px">Login salah</p>
   </div>
+</div>
 
-  <!-- SIDEBAR -->
+<!-- APP -->
+<div class="layout" id="app">
+
   <div class="sidebar">
     <h2>🏫 Inventaris SD</h2>
     <div class="menu">
@@ -82,7 +69,6 @@
     </div>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
 
     <!-- DASHBOARD -->
@@ -96,15 +82,15 @@
     <!-- DATA BARANG -->
     <div id="barang" class="hidden">
       <div class="card">
-        <h3>Tambah Barang</h3><br>
-        <input id="nama" placeholder="Nama barang"><br><br>
-        <input id="jumlah" type="number" placeholder="Jumlah"><br><br>
-        <input id="gambar" placeholder="URL gambar"><br><br>
+        <h3>Tambah Barang</h3>
+        <input id="nama" placeholder="Nama barang">
+        <input id="jumlah" type="number" placeholder="Jumlah">
+        <input id="gambar" placeholder="URL gambar">
         <button class="btn" onclick="tambahBarang()">Tambah</button>
       </div>
 
       <div class="card">
-        <h3>Daftar Barang</h3><br>
+        <h3>Daftar Barang</h3>
         <table>
           <thead><tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Aksi</th><th>Gambar</th></tr></thead>
           <tbody id="tabelBarang"></tbody>
@@ -115,15 +101,15 @@
     <!-- PEMINJAMAN -->
     <div id="pinjam" class="hidden">
       <div class="card">
-        <h3>Input Peminjaman</h3><br>
-        <input id="peminjam" placeholder="Nama peminjam"><br><br>
-        <select id="barangSelect"></select><br><br>
-        <input id="jumlahPinjam" type="number" placeholder="Jumlah dipinjam"><br><br>
+        <h3>Input Peminjaman</h3>
+        <input id="peminjam" placeholder="Nama peminjam">
+        <select id="barangSelect"></select>
+        <input id="jumlahPinjam" type="number" placeholder="Jumlah dipinjam">
         <button class="btn-warning" onclick="pinjamBarang()">Pinjam</button>
       </div>
 
       <div class="card">
-        <h3>Riwayat Peminjaman</h3><br>
+        <h3>Riwayat Peminjaman</h3>
         <table>
           <thead><tr><th>Nama</th><th>Barang</th><th>Jumlah</th></tr></thead>
           <tbody id="tabelPinjam"></tbody>
@@ -135,99 +121,93 @@
 </div>
 
 <script>
-let barang = JSON.parse(localStorage.getItem('barang')||'[]')
-let pinjam = JSON.parse(localStorage.getItem('pinjam')||'[]')
+const ADMIN_USER="admin";
+const ADMIN_PASS="123";
 
-
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "123";
+let barang=JSON.parse(localStorage.getItem('barang')||'[]');
+let pinjam=JSON.parse(localStorage.getItem('pinjam')||'[]');
 
 function login(){
-  if(username.value === ADMIN_USER && password.value === ADMIN_PASS){
-    localStorage.setItem("login", "true"); // simpan status login
-    cekLogin(); // masuk ke aplikasi
-  } else {
-    loginError.style.display = "block"; // tampilkan error
-  }
+  if(username.value===ADMIN_USER && password.value===ADMIN_PASS){
+    localStorage.setItem('login','true');
+    cekLogin();
+  }else loginError.style.display='block';
 }
 
 function logout(){
-  localStorage.removeItem("login");
+  localStorage.removeItem('login');
   location.reload();
 }
 
 function cekLogin(){
-  if(localStorage.getItem("login") === "true"){
-    loginPage.style.display = "none"; // sembunyikan halaman login
-    app.style.display = "flex";       // tampilkan aplikasi
+  if(localStorage.getItem('login')==='true'){
+    loginPage.style.display='none';
+    app.style.display='flex';
     render();
   }
 }
 
 function kodeOtomatis(){
-  return 'BRG-'+String(barang.length+1).padStart(3,'0')
+  return 'BRG-'+String(barang.length+1).padStart(3,'0');
 }
 
 function simpan(){
-  localStorage.setItem('barang',JSON.stringify(barang))
-  localStorage.setItem('pinjam',JSON.stringify(pinjam))
+  localStorage.setItem('barang',JSON.stringify(barang));
+  localStorage.setItem('pinjam',JSON.stringify(pinjam));
 }
 
 function showPage(id){
-  ['dashboard','barang','pinjam'].forEach(p=>document.getElementById(p).classList.add('hidden'))
-  document.getElementById(id).classList.remove('hidden')
+  ['dashboard','barang','pinjam'].forEach(p=>document.getElementById(p).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
 
-  document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'))
-  document.getElementById('menu-'+id)?.classList.add('active')
+  document.querySelectorAll('.menu a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('menu-'+id)?.classList.add('active');
 
-  render()
+  render();
 }
 
 function tambahBarang(){
-  const data={
-    kode:kodeOtomatis(),
-    nama:nama.value,
-    jumlah:parseInt(jumlah.value),
-    gambar:gambar.value
-  }
-  barang.push(data)
-  simpan();render()
+  if(!nama.value||!jumlah.value) return alert('Lengkapi data');
+
+  barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:gambar.value});
+  simpan();
+  nama.value=jumlah.value=gambar.value='';
+  render();
 }
 
 function render(){
-  totalBarang.textContent=barang.length
-  totalPinjam.textContent=pinjam.length
+  totalBarang.textContent=barang.length;
+  totalPinjam.textContent=pinjam.length;
 
-  tabelBarang.innerHTML=barang.map((b,i)=>`
-    <tr>
-      <td>${b.kode}</td>
-      <td>${b.nama}</td>
-      <td>${b.jumlah}</td>
-      <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
-      <td>${b.gambar?`<img src='${b.gambar}' width='50'>`:''}</td>
-    </tr>`).join('')
+  tabelBarang.innerHTML=barang.map((b,i)=>`\n    <tr>\n      <td>${b.kode}</td>\n      <td>${b.nama}</td>\n      <td>${b.jumlah}</td>\n      <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>\n      <td>${b.gambar?`<img src='${b.gambar}' width='50'>`:''}</td>\n    </tr>`).join('');
 
-  barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`)
+  barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`);
 
-  tabelPinjam.innerHTML=pinjam.map(p=>`<tr><td>${p.nama}</td><td>${p.barang}</td><td>${p.jumlah}</td></tr>`).join('')
+  tabelPinjam.innerHTML=pinjam.map(p=>`<tr><td>${p.nama}</td><td>${p.barang}</td><td>${p.jumlah}</td></tr>`).join('');
 }
 
-function hapus(i){barang.splice(i,1);simpan();render()}
+function hapus(i){
+  if(!confirm('Hapus barang?')) return;
+  barang.splice(i,1);
+  simpan();
+  render();
+}
 
 function pinjamBarang(){
-  const i=barangSelect.value
-  const j=parseInt(jumlahPinjam.value)
-  if(j>barang[i].jumlah) return alert('Stok tidak cukup')
+  const i=barangSelect.value;
+  const j=parseInt(jumlahPinjam.value);
+  if(!peminjam.value||!j) return alert('Lengkapi data');
+  if(j>barang[i].jumlah) return alert('Stok tidak cukup');
 
-  barang[i].jumlah-=j
-  pinjam.push({nama:peminjam.value,barang:barang[i].nama,jumlah:j})
+  barang[i].jumlah-=j;
+  pinjam.push({nama:peminjam.value,barang:barang[i].nama,jumlah:j});
 
-  simpan();render()
+  simpan();
+  peminjam.value=jumlahPinjam.value='';
+  render();
 }
 
-function logout(){alert('Logout berhasil')}
-
-render()
+cekLogin();
 </script>
 </body>
 </html>
