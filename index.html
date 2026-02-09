@@ -171,10 +171,24 @@ function showPage(id){
 function tambahBarang(){
   if(!nama.value||!jumlah.value) return alert('Lengkapi data');
 
-  const file=gambar.files[0];
+  const file = gambar.files[0];
 
-  function lanjut(img){
-    barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:img||''});
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:e.target.result});
+      simpan();
+      nama.value=jumlah.value=gambar.value='';
+      render();
+    };
+    reader.readAsDataURL(file);
+  }else{
+    barang.push({kode:kodeOtomatis(),nama:nama.value,jumlah:parseInt(jumlah.value),gambar:''});
+    simpan();
+    nama.value=jumlah.value=gambar.value='';
+    render();
+  }
+});
     simpan();
     nama.value=jumlah.value='';
     gambar.value='';
@@ -193,13 +207,13 @@ function render(){
   totalPinjam.textContent=pinjam.length;
 
   tabelBarang.innerHTML=barang.map((b,i)=>`
-  <tr>
-    <td>${b.kode}</td>
-    <td>${b.nama}</td>
-    <td>${b.jumlah}</td>
-    <td>${b.gambar?`<img src="${b.gambar}" class="img-preview">`:'-'}</td>
-    <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
-  </tr>`).join('');
+    <tr>
+      <td>${b.kode}</td>
+      <td>${b.nama}</td>
+      <td>${b.jumlah}</td>
+      <td>${b.gambar?`<img src="${b.gambar}" style="width:50px;height:50px;object-fit:cover;border-radius:6px">`:'-'}</td>
+      <td><button class='btn-danger' onclick='hapus(${i})'>Hapus</button></td>
+    </tr>`).join('');
 
   barangSelect.innerHTML=barang.map((b,i)=>`<option value='${i}'>${b.nama} (${b.jumlah})</option>`);
 
