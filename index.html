@@ -2,21 +2,16 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
   <title>Sistem Inventaris SD · Lazuardi</title>
 
   <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-  <!-- CHART.JS -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
   <!-- FONTS & ICONS -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     * {
@@ -25,150 +20,14 @@
       box-sizing: border-box;
     }
 
-    :root {
-      --primary: #0284c7;
-      --primary-dark: #0369a1;
-      --primary-light: #e0f2fe;
-      --secondary: #f59e0b;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --dark: #0f172a;
-      --gray: #64748b;
-      --light: #f8fafc;
-      --border: #e2e8f0;
-      --purple: #8b5cf6;
-    }
-
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f1f5f9;
-      color: var(--dark);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
       line-height: 1.5;
     }
 
-    /* ========== TOAST ========== */
-    .toast-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .toast {
-      background: white;
-      border-radius: 1rem;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      min-width: 300px;
-      animation: slideIn 0.3s ease;
-      border-left: 5px solid;
-    }
-
-    .toast.success { border-left-color: var(--success); }
-    .toast.error { border-left-color: var(--danger); }
-    .toast.warning { border-left-color: var(--warning); }
-    .toast.info { border-left-color: var(--primary); }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* ========== LOADING ========== */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(5px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9998;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .spinner {
-      width: 60px;
-      height: 60px;
-      border: 5px solid var(--primary-light);
-      border-top-color: var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ========== MODAL EDIT ========== */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-      z-index: 10000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 2rem;
-      padding: 2rem;
-      width: 90%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: modalSlideIn 0.3s ease;
-    }
-
-    @keyframes modalSlideIn {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 3px solid var(--primary-light);
-    }
-
-    .modal-header h3 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #075985;
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--gray);
-      padding: 0.5rem;
-    }
-
-    .modal-close:hover {
-      color: var(--danger);
-    }
-
-    /* ========== LOGIN ========== */
+    /* LOGIN MODERN */
     .login-container {
       min-height: 100vh;
       display: flex;
@@ -179,8 +38,9 @@
     }
 
     .glass-card {
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255,255,255,0.5);
       border-radius: 2rem;
       padding: 2.5rem 2rem;
@@ -190,13 +50,17 @@
     }
 
     .glass-card h2 {
-      font-weight: 800;
+      font-weight: 700;
       font-size: 1.8rem;
       color: #075985;
       margin-bottom: 0.75rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+    }
+
+    .glass-card h2 i {
+      color: #0284c7;
     }
 
     .input-group {
@@ -217,7 +81,7 @@
       width: 100%;
       padding: 0.9rem 1.2rem;
       background: white;
-      border: 2px solid var(--border);
+      border: 2px solid #e2e8f0;
       border-radius: 1.2rem;
       font-size: 1rem;
       transition: 0.2s ease;
@@ -225,7 +89,7 @@
     }
 
     .input-field:focus {
-      border-color: var(--primary);
+      border-color: #0284c7;
       box-shadow: 0 0 0 4px rgba(2,132,199,0.15);
     }
 
@@ -245,11 +109,13 @@
       margin-top: 0.5rem;
       cursor: pointer;
       transition: 0.2s;
+      border: 1px solid rgba(255,255,255,0.3);
     }
 
     .btn-login:hover {
       transform: scale(1.02);
       background: linear-gradient(115deg, #075985, #0369a1);
+      box-shadow: 0 12px 20px -10px #0369a180;
     }
 
     #loginError {
@@ -262,10 +128,11 @@
       gap: 0.5rem;
     }
 
-    /* ========== LAYOUT ========== */
+    /* LAYOUT UTAMA — SIDEBAR ELEGAN */
     .layout {
       display: none;
       min-height: 100vh;
+      background: #f1f5f9;
     }
 
     .sidebar {
@@ -273,6 +140,7 @@
       width: 280px;
       height: 100vh;
       background: linear-gradient(170deg, #0c4a6e, #075985);
+      backdrop-filter: blur(10px);
       padding: 2rem 1.5rem;
       color: white;
       display: flex;
@@ -281,62 +149,20 @@
     }
 
     .sidebar h2 {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 800;
+      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
+      margin-bottom: 3rem;
       border-bottom: 2px solid rgba(255,255,255,0.15);
+      padding-bottom: 1.5rem;
     }
 
-    /* ========== PROFIL USER ========== */
-    .user-profile {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 1.5rem;
-      padding: 1.5rem 1.2rem;
-      margin-bottom: 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .user-avatar {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(145deg, #f59e0b, #d97706);
-      border-radius: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      color: white;
-      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);
-    }
-
-    .user-info {
-      flex: 1;
-    }
-
-    .user-name {
-      font-weight: 700;
-      font-size: 1.1rem;
-      margin-bottom: 0.2rem;
-    }
-
-    .user-role {
-      display: inline-block;
-      padding: 0.2rem 1rem;
-      background: rgba(2,132,199,0.3);
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border: 1px solid rgba(255,255,255,0.3);
+    .sidebar h2 i {
+      color: #fbbf24;
+      text-shadow: 0 0 8px #fbbf24;
     }
 
     .menu {
@@ -348,11 +174,13 @@
       align-items: center;
       gap: 0.8rem;
       color: rgba(255,255,255,0.85);
+      text-decoration: none;
       padding: 0.9rem 1.2rem;
       border-radius: 1.2rem;
       margin-bottom: 0.4rem;
-      cursor: pointer;
+      font-weight: 550;
       transition: 0.2s;
+      cursor: pointer;
     }
 
     .menu a i {
@@ -361,130 +189,130 @@
     }
 
     .menu a:hover, .menu a.active {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.12);
       color: white;
+      backdrop-filter: blur(8px);
     }
 
     .logout-btn {
-      margin-top: 1rem;
       background: rgba(239,68,68,0.15);
-      border: 1px solid rgba(239,68,68,0.3);
+      border: 1px solid rgba(239,68,68,0.2);
     }
 
     .logout-btn:hover {
       background: rgba(239,68,68,0.3) !important;
     }
 
+    /* CONTENT AREA */
     .content {
       margin-left: 280px;
       padding: 2rem 2.5rem;
       width: calc(100% - 280px);
     }
 
-    /* ========== CARD ========== */
+    /* CARD CANTIK */
     .card {
       background: white;
       border-radius: 1.75rem;
       padding: 1.8rem 2rem;
-      box-shadow: 0 10px 30px -5px rgba(0,0,0,0.03);
-      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px -5px rgba(0,0,0,0.03), 0 5px 15px -6px rgba(0,0,0,0.02);
       border: 1px solid rgba(255,255,255,0.8);
+      margin-bottom: 2rem;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: 0 20px 35px -10px rgba(2,132,199,0.08);
     }
 
     .card h3 {
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 700;
       color: #075985;
       margin-bottom: 1.5rem;
+      border-bottom: 3px solid #e0f2fe;
       padding-bottom: 0.8rem;
-      border-bottom: 3px solid var(--primary-light);
     }
 
-    /* ========== FORM ========== */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-
-    input, select, textarea {
+    /* FORM INPUT */
+    input, select {
       background: #f8fafc;
-      border: 2px solid var(--border);
-      border-radius: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 1.2rem;
       padding: 0.9rem 1.2rem;
       width: 100%;
+      margin-bottom: 0.8rem;
       font-size: 0.98rem;
+      transition: 0.15s;
       outline: none;
     }
 
     input:focus, select:focus {
-      border-color: var(--primary);
+      border-color: #0284c7;
       background: white;
       box-shadow: 0 0 0 4px #bae6fd;
     }
 
-    /* ========== BUTTONS ========== */
-    .btn-primary, .btn-warning, .btn-danger, .btn-success, .btn-edit {
+    /* BUTTONS */
+    .btn, .btn-warning, .btn-danger {
       border: none;
       padding: 0.8rem 1.8rem;
       border-radius: 2rem;
       font-weight: 600;
+      font-size: 0.9rem;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.4rem;
-      cursor: pointer;
-      color: white;
       transition: 0.2s;
+      cursor: pointer;
+      border: 1px solid transparent;
     }
 
-    .btn-primary { background: var(--primary); }
-    .btn-success { background: var(--success); }
-    .btn-warning { background: var(--warning); }
-    .btn-danger { background: var(--danger); }
-    .btn-edit { background: var(--purple); }
-
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
-    .btn-success:hover { background: #0b9e6e; transform: translateY(-2px); }
-    .btn-warning:hover { background: #d97706; transform: translateY(-2px); }
-    .btn-danger:hover { background: #b91c1c; transform: translateY(-2px); }
-    .btn-edit:hover { background: #7c3aed; transform: translateY(-2px); }
-
-    /* ========== BADGE STATUS ========== */
-    .badge {
-      padding: 0.3rem 1rem;
-      border-radius: 2rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      display: inline-block;
+    .btn {
+      background: #0284c7;
+      color: white;
     }
-    
-    .badge-success {
-      background: #d1fae5;
-      color: #065f46;
-    }
-    
-    .badge-warning {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    
-    .badge-danger {
-      background: #fee2e2;
-      color: #b91c1c;
+    .btn:hover {
+      background: #0369a1;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 16px -8px #0369a180;
     }
 
-    /* ========== TABLE ========== */
-    .table-responsive {
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+    .btn-warning:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 16px -8px #f59e0b80;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+      transform: translateY(-2px);
+    }
+
+    /* TABLE MODERN */
+    .table-wrapper {
       overflow-x: auto;
-      border-radius: 1rem;
+      border-radius: 1.2rem;
+      margin-top: 1rem;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      background: white;
+      border-radius: 1.2rem;
     }
 
     th {
@@ -493,268 +321,139 @@
       font-weight: 700;
       font-size: 0.85rem;
       text-transform: uppercase;
-      padding: 1rem;
+      letter-spacing: 0.06em;
+      padding: 1rem 1rem;
     }
 
     td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
+      padding: 1rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
       vertical-align: middle;
     }
 
-    tr:hover td {
+    tr:hover {
       background: #fafdff;
     }
 
-    .action-buttons {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    /* ========== STATS ========== */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      box-shadow: 0 10px 25px -10px rgba(0,0,0,0.02);
-    }
-
-    .stat-icon {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(145deg, var(--primary-light), #bae6fd);
-      border-radius: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      color: var(--primary-dark);
-    }
-
-    .stat-content h4 { 
-      font-size: 0.9rem; 
-      color: var(--gray); 
-      margin-bottom: 0.2rem;
-    }
-    
-    .stat-content span { 
-      font-size: 2.2rem; 
-      font-weight: 800; 
-      color: var(--dark); 
-    }
-
-    /* ========== CHARTS ========== */
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    .chart-container {
-      background: white;
-      border-radius: 1.75rem;
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px -5px rgba(0,0,0,0.03);
-    }
-
-    .chart-container h4 {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #075985;
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 250px !important;
-    }
-
-    /* ========== IMAGE ========== */
     .img-preview {
-      width: 60px;
-      height: 60px;
+      width: 52px;
+      height: 52px;
       object-fit: cover;
       border-radius: 1rem;
       border: 3px solid white;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.06);
     }
 
-    .img-preview:hover {
-      transform: scale(1.1);
+    /* STATS CARD DASHBOARD */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      background: white;
+      padding: 1.8rem 1.5rem;
+      border-radius: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      border: 1px solid rgba(2,132,199,0.1);
+      box-shadow: 0 12px 25px -10px rgba(0,0,0,0.02);
+    }
+
+    .stat-icon {
+      background: linear-gradient(145deg, #e0f2fe, #bae6fd);
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 1.5rem;
+      font-size: 1.8rem;
+      color: #0369a1;
+    }
+
+    .stat-content h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #475569;
+    }
+
+    .stat-content span {
+      font-size: 2.6rem;
+      font-weight: 800;
+      color: #0c4a6e;
+      line-height: 1;
+    }
+
+    .hidden {
+      display: none;
     }
 
     .file-label {
       background: #f1f5f9;
-      padding: 0.8rem 1.5rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 2rem;
-      display: inline-block;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       border: 2px dashed #94a3b8;
-      transition: all 0.3s;
+      width: 100%;
     }
 
-    .file-label:hover {
-      background: #e2e8f0;
-      border-color: var(--primary);
+    /* cetak btn */
+    .cetak-btn {
+      background: #334155;
+      color: white;
+      margin-bottom: 1.2rem;
+    }
+    .cetak-btn:hover {
+      background: #1e293b;
     }
 
-    .hidden { display: none !important; }
-
-    @media (max-width: 1024px) {
-      .charts-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .sidebar { width: 100px; padding: 1rem; }
-      .sidebar h2 span, .menu a span, .user-profile .user-info { display: none; }
-      .user-profile { justify-content: center; }
-      .content { margin-left: 100px; width: calc(100% - 100px); padding: 1rem; }
-      .form-grid { grid-template-columns: 1fr; }
-      .action-buttons { flex-direction: column; }
+      .sidebar h2 span { display: none; }
+      .menu a span { display: none; }
+      .content { margin-left: 100px; width: calc(100% - 100px); }
     }
   </style>
 </head>
 <body>
 
-<!-- ========== TOAST ========== -->
-<div id="toastContainer" class="toast-container"></div>
-
-<!-- ========== LOADING ========== -->
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="spinner"></div>
-  <p style="color: var(--primary); font-weight: 600;">Sedang memproses...</p>
-</div>
-
-<!-- ========== MODAL EDIT BARANG ========== -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3><i class="fas fa-edit"></i> Edit Barang</h3>
-      <button class="modal-close" onclick="closeEditModal()">&times;</button>
-    </div>
-    <div id="editForm">
-      <input type="hidden" id="editId">
-      <input type="hidden" id="editOldImageUrl">
-      <input type="hidden" id="editDeleteUrl">
-      
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Kode Barang</label>
-        <input type="text" id="editKode" readonly style="background: #f1f5f9;">
-      </div>
-
-      <div class="form-group" style="margin-bottom: 1rem;">
-        <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Nama Barang</label>
-        <input type="text" id="editNama" placeholder="Nama Barang">
-      </div>
-
-      <div class="form-grid" style="margin-bottom: 1rem;">
-        <div>
-          <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Kategori</label>
-          <select id="editKategori">
-            <option value="Elektronik">Elektronik</option>
-            <option value="Perabot">Perabot</option>
-            <option value="ATK">ATK</option>
-            <option value="Lainnya">Lainnya</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Stok</label>
-          <input type="number" id="editJumlah" placeholder="Jumlah Stok">
-        </div>
-      </div>
-
-      <div style="margin: 1.5rem 0;">
-        <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Gambar Saat Ini</label>
-        <img id="editCurrentImage" src="" alt="Current" style="width: 100px; height: 100px; object-fit: cover; border-radius: 1rem; border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 1rem;">
-        
-        <label for="editGambar" class="file-label" style="margin-top: 0.5rem;">
-          <i class="fas fa-cloud-upload-alt"></i> 
-          <span id="editFileName">Ganti Gambar (opsional)</span>
-        </label>
-        <input type="file" id="editGambar" accept="image/*" style="display: none;" onchange="previewEditImage(this)">
-        <div id="editImagePreview" style="margin-top: 1rem; display: none;">
-          <img src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 1rem;">
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-        <button class="btn-danger" onclick="closeEditModal()" style="background: var(--gray);">
-          <i class="fas fa-times"></i> Batal
-        </button>
-        <button class="btn-success" onclick="updateBarang()">
-          <i class="fas fa-save"></i> Simpan Perubahan
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ========== LOGIN PAGE ========== -->
+<!-- HALAMAN LOGIN — ELEGAN -->
 <div id="loginPage" class="login-container">
   <div class="glass-card">
-    <h2><i class="fas fa-school"></i> SD Lazuardi</h2>
-    <p style="color: #164863; margin-bottom: 1.8rem; font-weight: 500;">Sistem Inventaris Sekolah</p>
+    <h2><i class="fas fa-school"></i> Lazuardi</h2>
+    <p style="color: #164863; margin-bottom: 1.8rem; font-weight: 500;">Inventaris SD · Admin panel</p>
     
     <div class="input-group">
-      <label><i class="fas fa-user"></i> Username</label>
-      <input type="text" id="username" class="input-field" placeholder="Masukkan username" value="admin">
+      <label><i class="far fa-user"></i> Username</label>
+      <input type="text" id="username" class="input-field" placeholder="admin" autocomplete="off">
     </div>
-    
     <div class="input-group">
       <label><i class="fas fa-lock"></i> Password</label>
-      <input type="password" id="password" class="input-field" placeholder="Masukkan password" value="lazuardi">
-    </div>
-    
-    <div class="input-group">
-      <label><i class="fas fa-user-tag"></i> Role</label>
-      <select id="role" class="input-field">
-        <option value="admin">Admin</option>
-        <option value="guru">Guru</option>
-      </select>
+      <input type="password" id="password" class="input-field" placeholder="••••••••">
     </div>
 
     <button class="btn-login" onclick="login()">
       <i class="fas fa-arrow-right-to-bracket"></i> Masuk
     </button>
-    
     <div id="loginError">
-      <i class="fas fa-circle-exclamation"></i> Username atau password salah!
+      <i class="fas fa-circle-exclamation"></i> Username / password salah
     </div>
   </div>
 </div>
 
-<!-- ========== APP ========== -->
+<!-- APLIKASI UTAMA -->
 <div class="layout" id="app">
-  <!-- SIDEBAR DENGAN PROFIL -->
+  <!-- SIDEBAR PREMIUM -->
   <div class="sidebar">
     <h2><i class="fas fa-cubes"></i> <span>SD Lazuardi</span></h2>
-    
-    <!-- ========== PROFIL USER ========== -->
-    <div class="user-profile" id="userProfile">
-      <div class="user-avatar">
-        <i class="fas fa-user-graduate"></i>
-      </div>
-      <div class="user-info">
-        <div class="user-name" id="displayName">Admin</div>
-        <span class="user-role" id="displayRole">ADMIN</span>
-      </div>
-    </div>
-
     <div class="menu">
       <a onclick="showPage('dashboard')" class="active" id="menu-dashboard">
         <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
@@ -769,123 +468,68 @@
         <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
       </a>
     </div>
+    <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 2rem; text-align: center">
+      <i class="fas fa-shield"></i> <span>v2.0 · amanah</span>
+    </div>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
-    <!-- ========== DASHBOARD DENGAN GRAFIK ========== -->
+
+    <!-- DASHBOARD MODERN -->
     <div id="dashboard">
       <div class="stats-grid">
-        <div class="stat-card">
+        <div class="stat-item">
           <div class="stat-icon"><i class="fas fa-box"></i></div>
           <div class="stat-content">
             <h4>Total Barang</h4>
             <span id="totalBarang">0</span>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-hand-holding"></i></div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fas fa-bookmark"></i></div>
           <div class="stat-content">
             <h4>Dipinjam</h4>
             <span id="totalPinjam">0</span>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-item">
+          <div class="stat-icon"><i class="fas fa-rotate"></i></div>
           <div class="stat-content">
-            <h4>Tersedia</h4>
-            <span id="totalTersedia">0</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
-          <div class="stat-content">
-            <h4>Stok Menipis</h4>
-            <span id="totalMenipis">0</span>
+            <h4>Stok Tersedia</h4>
+            <span id="totalStokBersih">0</span>
           </div>
         </div>
       </div>
-
-      <!-- GRAFIK DASHBOARD -->
-      <div class="charts-grid">
-        <div class="chart-container">
-          <h4><i class="fas fa-chart-bar"></i> Stok Barang (Top 5)</h4>
-          <canvas id="stockChart"></canvas>
-        </div>
-        <div class="chart-container">
-          <h4><i class="fas fa-chart-line"></i> Tren Peminjaman (7 Hari Terakhir)</h4>
-          <canvas id="pinjamChart"></canvas>
-        </div>
-      </div>
-
-      <!-- PEMINJAMAN TERBARU -->
-      <div class="card">
-        <h3><i class="fas fa-clock"></i> Peminjaman Terbaru</h3>
-        <div id="recentPinjam" style="max-height: 250px; overflow-y: auto;">
-          <!-- Dynamic content -->
-        </div>
+      <div class="card" style="margin-top: 0.5rem;">
+        <h3><i class="fas fa-flag-checkered"></i> Selamat Datang, Admin!</h3>
+        <p style="color: #334155;">Pantau dan kelola inventaris sekolah dengan mudah. Gunakan menu di samping untuk memulai.</p>
       </div>
     </div>
 
-    <!-- ========== DATA BARANG ========== -->
+    <!-- DATA BARANG — BETTER UI -->
     <div id="barang" class="hidden">
-      <!-- FORM TAMBAH BARANG -->
       <div class="card">
         <h3><i class="fas fa-plus-circle"></i> Tambah Barang</h3>
-        <div class="form-grid">
-          <input type="text" id="nama" placeholder="Nama Barang">
-          <input type="number" id="jumlah" placeholder="Jumlah Stok">
-          <select id="kategori">
-            <option value="">Pilih Kategori</option>
-            <option value="Elektronik">Elektronik</option>
-            <option value="Perabot">Perabot</option>
-            <option value="ATK">ATK</option>
-            <option value="Lainnya">Lainnya</option>
-          </select>
-        </div>
-        
-        <!-- UPLOAD GAMBAR -->
-        <div style="margin: 1.5rem 0;">
-          <label for="gambar" class="file-label">
-            <i class="fas fa-cloud-upload-alt"></i> 
-            <span id="fileName">Pilih Gambar</span>
-          </label>
-          <input type="file" id="gambar" accept="image/*" style="display: none;" onchange="previewImage(this)">
-          <div id="imagePreview" style="margin-top: 1rem; display: none;">
-            <img src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 1rem;">
+        <div style="display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));">
+          <input id="nama" placeholder="Nama barang">
+          <input id="jumlah" type="number" placeholder="Jumlah">
+          <div style="grid-column: span 2;">
+            <label for="gambar" class="file-label"><i class="fas fa-cloud-upload-alt"></i> Pilih Gambar</label>
+            <input id="gambar" type="file" accept="image/*" style="display: none;" onchange="updateFileName(this)">
           </div>
         </div>
-
-        <button class="btn-primary" onclick="tambahBarang()">
-          <i class="fas fa-save"></i> Simpan Barang
-        </button>
+        <button class="btn" onclick="tambahBarang()" style="margin-top: 1.2rem; width: auto; padding: 0.9rem 2.5rem;"><i class="fas fa-save"></i> Simpan Barang</button>
       </div>
 
-      <!-- SEARCH -->
       <div class="card">
-        <input type="text" id="searchBarang" placeholder="🔍 Cari nama atau kode barang..." onkeyup="filterBarang()">
-      </div>
-
-      <!-- TABEL BARANG DENGAN TOMBOL EDIT & HAPUS -->
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h3><i class="fas fa-list"></i> Daftar Barang</h3>
-          <button class="btn-success" onclick="exportExcel()">
-            <i class="fas fa-file-excel"></i> Excel
-          </button>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+          <h3><i class="fas fa-list-ul"></i> Daftar Barang</h3>
+          <button class="btn cetak-btn" onclick="cetakPDF()"><i class="fas fa-file-pdf"></i> Cetak Laporan</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table>
             <thead>
-              <tr>
-                <th>Kode</th>
-                <th>Gambar</th>
-                <th>Nama</th>
-                <th>Kategori</th>
-                <th>Stok</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
+              <tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Gambar</th><th>Aksi</th></tr>
             </thead>
             <tbody id="tabelBarang"></tbody>
           </table>
@@ -893,767 +537,199 @@
       </div>
     </div>
 
-    <!-- ========== PEMINJAMAN ========== -->
+    <!-- PEMINJAMAN — CLEAN -->
     <div id="pinjam" class="hidden">
-      <!-- FORM PINJAM -->
       <div class="card">
-        <h3><i class="fas fa-hand-holding-heart"></i> Form Peminjaman</h3>
-        <div class="form-grid">
-          <input type="text" id="peminjam" placeholder="Nama Peminjam">
-          <select id="barangSelect">
-            <option value="">Pilih Barang</option>
-          </select>
-          <input type="number" id="jumlahPinjam" placeholder="Jumlah">
-          <input type="date" id="tanggalPinjam">
-        </div>
-        <button class="btn-warning" onclick="pinjamBarang()" style="margin-top: 1rem;">
-          <i class="fas fa-check-circle"></i> Pinjam Barang
-        </button>
-      </div>
-
-      <!-- PEMINJAMAN AKTIF -->
-      <div class="card">
-        <h3><i class="fas fa-clock"></i> Peminjaman Aktif</h3>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Peminjam</th>
-                <th>Barang</th>
-                <th>Jumlah</th>
-                <th>Tanggal</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tabelPinjamAktif"></tbody>
-          </table>
+        <h3><i class="fas fa-pen"></i> Form Peminjaman</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+          <input id="peminjam" placeholder="Nama peminjam">
+          <select id="barangSelect" style="margin-bottom: 0;"></select>
+          <input id="jumlahPinjam" type="number" placeholder="Jumlah dipinjam">
+          <button class="btn-warning" onclick="pinjamBarang()" style="margin-bottom: 0;"><i class="fas fa-hand-holding-heart"></i> Pinjam</button>
         </div>
       </div>
 
-      <!-- RIWAYAT PEMINJAMAN -->
       <div class="card">
         <h3><i class="fas fa-history"></i> Riwayat Peminjaman</h3>
-        <div class="table-responsive">
+        <div class="table-wrapper">
           <table>
-            <thead>
-              <tr>
-                <th>Peminjam</th>
-                <th>Barang</th>
-                <th>Jumlah</th>
-                <th>Tanggal</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tabelRiwayat"></tbody>
+            <thead><tr><th>Nama</th><th>Barang</th><th>Jumlah</th></tr></thead>
+            <tbody id="tabelPinjam"></tbody>
           </table>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <script>
-  // ========== FIREBASE ==========
   const firebaseConfig = {
     apiKey: "AIzaSyAVeXYR1sI6YC9xOVhlBSbf0RFMr9Ams1g",
     authDomain: "inventaris-sd.firebaseapp.com",
     projectId: "inventaris-sd",
     storageBucket: "inventaris-sd.firebasestorage.app",
     messagingSenderId: "421661627652",
-    appId: "1:421661627652:web:9ae755b3a997b8544e6c51"
+    appId: "1:421661627652:web:9ae755b3a997b8544e6c51",
+    measurementId: "G-SVNDR0ZRW6"
   };
-
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // ========== GLOBAL ==========
-  let currentRole = 'admin';
-  let currentUser = 'Admin';
-  let barangData = [];
-  let pinjamData = [];
-  let stockChart = null;
-  let pinjamChart = null;
+  const ADMIN_USER = "admin";
+  const ADMIN_PASS = "lazuardi";
 
-  // ========== API KEY IMGBB ==========
-  const IMGBB_API_KEY = '0037c299ecb5215d3e142b7993842a11';
-
-  // ========== TOAST ==========
-  function showToast(message, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    let icon = 'fa-check-circle';
-    if (type === 'error') icon = 'fa-exclamation-circle';
-    if (type === 'warning') icon = 'fa-exclamation-triangle';
-    if (type === 'info') icon = 'fa-info-circle';
-    
-    toast.innerHTML = `
-      <i class="fas ${icon}"></i>
-      <span style="flex:1; font-weight:500;">${message}</span>
-      <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer; color:var(--gray);">
-        <i class="fas fa-times"></i>
-      </button>
-    `;
-    container.appendChild(toast);
-    setTimeout(() => toast.remove(), 5000);
-  }
-
-  // ========== LOADING ==========
-  function showLoading() { 
-    document.getElementById('loadingOverlay').style.display = 'flex'; 
-  }
-  
-  function hideLoading() { 
-    document.getElementById('loadingOverlay').style.display = 'none'; 
-  }
-
-  // ========== LOGIN ==========
+  // LOGIN
   function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
     const loginError = document.getElementById('loginError');
-
-    if (username === 'admin' && password === 'lazuardi') {
-      currentRole = role;
-      currentUser = username;
-      
+    if (username.value === ADMIN_USER && password.value === ADMIN_PASS) {
       localStorage.setItem('login', 'true');
-      localStorage.setItem('role', currentRole);
-      localStorage.setItem('username', currentUser);
-      
-      showToast(`Selamat datang, ${username}!`, 'success');
       cekLogin();
     } else {
       loginError.style.display = 'flex';
     }
   }
 
-  // ========== LOGOUT ==========
   function logout() {
     localStorage.removeItem('login');
-    localStorage.removeItem('role');
-    localStorage.removeItem('username');
-    showToast('Berhasil logout!', 'info');
     location.reload();
   }
 
-  // ========== CEK LOGIN ==========
   function cekLogin() {
     if (localStorage.getItem('login') === 'true') {
-      currentRole = localStorage.getItem('role') || 'admin';
-      currentUser = localStorage.getItem('username') || 'Admin';
-      
-      document.getElementById('displayName').innerText = currentUser;
-      document.getElementById('displayRole').innerHTML = currentRole.toUpperCase();
-      
       document.getElementById('loginPage').style.display = 'none';
       document.getElementById('app').style.display = 'flex';
-      
       loadData();
-      initCharts();
-      
-      const today = new Date().toISOString().split('T')[0];
-      if (document.getElementById('tanggalPinjam')) {
-        document.getElementById('tanggalPinjam').value = today;
-      }
     }
   }
 
-  // ========== SHOW PAGE ==========
-  function showPage(pageId) {
-    ['dashboard', 'barang', 'pinjam'].forEach(p => 
-      document.getElementById(p).classList.add('hidden')
-    );
-    document.getElementById(pageId).classList.remove('hidden');
-    
+  function showPage(id) {
+    ['dashboard','barang','pinjam'].forEach(p => document.getElementById(p).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    // active menu
     document.querySelectorAll('.menu a').forEach(el => el.classList.remove('active'));
-    document.getElementById(`menu-${pageId}`).classList.add('active');
-    
-    if (pageId === 'dashboard') {
-      updateCharts();
+    document.getElementById(`menu-${id}`).classList.add('active');
+  }
+
+  function updateFileName(input) {
+    if (input.files.length > 0) {
+      let label = document.querySelector('.file-label');
+      if (label) label.innerHTML = `<i class="fas fa-check-circle"></i> ${input.files[0].name}`;
     }
   }
 
-  // ========== PREVIEW GAMBAR ==========
-  function previewImage(input) {
-    const fileName = document.getElementById('fileName');
-    const preview = document.getElementById('imagePreview');
-    const previewImg = preview.querySelector('img');
-    
-    if (input.files && input.files[0]) {
-      fileName.innerHTML = input.files[0].name;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        previewImg.src = e.target.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(input.files[0]);
-    } else {
-      fileName.innerHTML = 'Pilih Gambar';
-      preview.style.display = 'none';
-    }
-  }
-
-  // ========== PREVIEW EDIT GAMBAR ==========
-  function previewEditImage(input) {
-    const fileName = document.getElementById('editFileName');
-    const preview = document.getElementById('editImagePreview');
-    const previewImg = preview.querySelector('img');
-    
-    if (input.files && input.files[0]) {
-      fileName.innerHTML = input.files[0].name;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        previewImg.src = e.target.result;
-        preview.style.display = 'block';
-      };
-      reader.readAsDataURL(input.files[0]);
-    } else {
-      fileName.innerHTML = 'Ganti Gambar (opsional)';
-      preview.style.display = 'none';
-    }
-  }
-
-  // ========== UPLOAD KE IMGBB ==========
-  async function uploadToImgBB(file) {
-    const formData = new FormData();
-    formData.append('image', file);
-    
-    try {
-      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-        method: 'POST',
-        body: formData
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        return {
-          url: data.data.url,
-          thumb: data.data.thumb.url,
-          delete_url: data.data.delete_url
-        };
-      } else {
-        throw new Error(data.error?.message || 'Upload gagal');
-      }
-    } catch (error) {
-      console.error('Error upload:', error);
-      throw error;
-    }
-  }
-
-  // ========== TAMBAH BARANG ==========
+  // TAMBAH BARANG DENGAN GAMBAR
   async function tambahBarang() {
-    const nama = document.getElementById('nama').value;
-    const jumlah = document.getElementById('jumlah').value;
-    const kategori = document.getElementById('kategori').value;
-    const file = document.getElementById('gambar').files[0];
+    const nama = document.getElementById('nama');
+    const jumlah = document.getElementById('jumlah');
+    const gambar = document.getElementById('gambar');
+    if (!nama.value || !jumlah.value || !gambar.files[0]) return alert('Lengkapi semua data!');
 
-    if (!nama || !jumlah || !kategori || !file) {
-      showToast('Lengkapi semua data!', 'error');
-      return;
-    }
-
-    showLoading();
-
-    try {
-      showToast('📤 Mengupload gambar...', 'info');
-      const imageData = await uploadToImgBB(file);
-      
+    const reader = new FileReader();
+    reader.onload = async function (e) {
       const snapshot = await db.collection('barang').get();
       const kode = 'SD-' + String(snapshot.size + 1).padStart(3, '0');
-      
       await db.collection('barang').add({
-        kode: kode,
-        nama: nama,
-        jumlah: parseInt(jumlah),
-        kategori: kategori,
-        gambar: imageData.url,
-        thumbnail: imageData.thumb,
-        imgbb_delete_url: imageData.delete_url,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        kode,
+        nama: nama.value,
+        jumlah: parseInt(jumlah.value),
+        gambar: e.target.result
       });
-
-      showToast('✅ Barang berhasil ditambahkan!', 'success');
-      
-      document.getElementById('nama').value = '';
-      document.getElementById('jumlah').value = '';
-      document.getElementById('kategori').value = '';
-      document.getElementById('gambar').value = '';
-      document.getElementById('fileName').innerHTML = 'Pilih Gambar';
-      document.getElementById('imagePreview').style.display = 'none';
-
-    } catch (error) {
-      showToast('❌ Gagal: ' + error.message, 'error');
-    }
-
-    hideLoading();
+      nama.value = '';
+      jumlah.value = '';
+      gambar.value = '';
+      document.querySelector('.file-label').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Pilih Gambar';
+    };
+    reader.readAsDataURL(gambar.files[0]);
   }
 
-  // ========== EDIT BARANG ==========
-  function editBarang(id, kode, nama, kategori, jumlah, gambar, thumb, deleteUrl) {
-    document.getElementById('editId').value = id;
-    document.getElementById('editKode').value = kode;
-    document.getElementById('editNama').value = nama;
-    document.getElementById('editKategori').value = kategori;
-    document.getElementById('editJumlah').value = jumlah;
-    document.getElementById('editCurrentImage').src = thumb || gambar || 'https://via.placeholder.com/100';
-    document.getElementById('editOldImageUrl').value = gambar;
-    document.getElementById('editDeleteUrl').value = deleteUrl || '';
-    
-    document.getElementById('editFileName').innerHTML = 'Ganti Gambar (opsional)';
-    document.getElementById('editImagePreview').style.display = 'none';
-    document.getElementById('editGambar').value = '';
-    
-    document.getElementById('editModal').style.display = 'flex';
-  }
-
-  // ========== CLOSE EDIT MODAL ==========
-  function closeEditModal() {
-    document.getElementById('editModal').style.display = 'none';
-  }
-
-  // ========== UPDATE BARANG ==========
-  async function updateBarang() {
-    const id = document.getElementById('editId').value;
-    const nama = document.getElementById('editNama').value;
-    const kategori = document.getElementById('editKategori').value;
-    const jumlah = parseInt(document.getElementById('editJumlah').value);
-    const file = document.getElementById('editGambar').files[0];
-    const oldImageUrl = document.getElementById('editOldImageUrl').value;
-    const oldDeleteUrl = document.getElementById('editDeleteUrl').value;
-
-    if (!nama || !kategori || !jumlah) {
-      showToast('Lengkapi semua data!', 'error');
-      return;
-    }
-
-    showLoading();
-
-    try {
-      let updateData = {
-        nama: nama,
-        kategori: kategori,
-        jumlah: jumlah
-      };
-
-      // Kalau ada gambar baru
-      if (file) {
-        showToast('📤 Mengupload gambar baru...', 'info');
-        const imageData = await uploadToImgBB(file);
-        
-        updateData.gambar = imageData.url;
-        updateData.thumbnail = imageData.thumb;
-        updateData.imgbb_delete_url = imageData.delete_url;
-
-        // Hapus gambar lama dari ImgBB
-        if (oldDeleteUrl) {
-          try {
-            await fetch(oldDeleteUrl);
-          } catch (e) {
-            console.log('Gagal hapus gambar lama:', e);
-          }
-        }
-      }
-
-      await db.collection('barang').doc(id).update(updateData);
-      
-      showToast('✅ Barang berhasil diupdate!', 'success');
-      closeEditModal();
-
-    } catch (error) {
-      showToast('❌ Gagal: ' + error.message, 'error');
-    }
-
-    hideLoading();
-  }
-
-  // ========== HAPUS BARANG ==========
-  async function hapusBarang(id, imgbbDeleteUrl) {
-    if (!confirm('Yakin ingin menghapus barang ini?')) return;
-    
-    showLoading();
-    try {
-      if (imgbbDeleteUrl) {
-        try {
-          await fetch(imgbbDeleteUrl);
-        } catch (e) {
-          console.log('Gagal hapus gambar:', e);
-        }
-      }
-      
-      await db.collection('barang').doc(id).delete();
-      showToast('✅ Barang berhasil dihapus!', 'success');
-    } catch (error) {
-      showToast('❌ Gagal: ' + error.message, 'error');
-    }
-    hideLoading();
-  }
-
-  // ========== PINJAM BARANG ==========
-  async function pinjamBarang() {
-    const barangId = document.getElementById('barangSelect').value;
-    const peminjam = document.getElementById('peminjam').value;
-    const jumlah = parseInt(document.getElementById('jumlahPinjam').value);
-    const tanggal = document.getElementById('tanggalPinjam').value;
-
-    if (!barangId || !peminjam || !jumlah) {
-      showToast('Lengkapi data peminjaman!', 'error');
-      return;
-    }
-
-    showLoading();
-
-    try {
-      const barangRef = db.collection('barang').doc(barangId);
-      const barangDoc = await barangRef.get();
-      const barang = barangDoc.data();
-
-      if (jumlah > barang.jumlah) {
-        hideLoading();
-        showToast('Stok tidak mencukupi!', 'error');
-        return;
-      }
-
-      await barangRef.update({ jumlah: barang.jumlah - jumlah });
-
-      await db.collection('pinjam').add({
-        barangId,
-        barangNama: barang.nama,
-        peminjam,
-        jumlah,
-        tanggal,
-        status: 'aktif',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      showToast('✅ Peminjaman berhasil!', 'success');
-      
-      document.getElementById('peminjam').value = '';
-      document.getElementById('jumlahPinjam').value = '';
-
-    } catch (error) {
-      showToast('❌ Gagal: ' + error.message, 'error');
-    }
-
-    hideLoading();
-  }
-
-  // ========== KEMBALIKAN BARANG ==========
-  async function kembalikanBarang(pinjamId, barangId, jumlah) {
-    if (!confirm('Konfirmasi pengembalian barang?')) return;
-    
-    showLoading();
-    try {
-      await db.collection('pinjam').doc(pinjamId).update({
-        status: 'kembali',
-        tanggalKembali: new Date().toISOString().split('T')[0]
-      });
-      
-      await db.collection('barang').doc(barangId).update({
-        jumlah: firebase.firestore.FieldValue.increment(jumlah)
-      });
-      
-      showToast('✅ Barang berhasil dikembalikan!', 'success');
-    } catch (error) {
-      showToast('❌ Gagal: ' + error.message, 'error');
-    }
-    hideLoading();
-  }
-
-  // ========== FILTER BARANG ==========
-  function filterBarang() {
-    const search = document.getElementById('searchBarang').value.toLowerCase();
-    let filtered = [...barangData];
-    
-    if (search) {
-      filtered = filtered.filter(b => 
-        b.nama?.toLowerCase().includes(search) || 
-        b.kode?.toLowerCase().includes(search)
-      );
-    }
-    
-    renderTabelBarang(filtered);
-  }
-
-  // ========== FUNGSI CEK STATUS ==========
-  function getStatusBadge(stok) {
-    if (stok <= 0) {
-      return '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Habis</span>';
-    } else if (stok <= 5) {
-      return '<span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> Stok Menipis</span>';
-    } else {
-      return '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Tersedia</span>';
-    }
-  }
-
-  // ========== RENDER TABEL BARANG ==========
-  function renderTabelBarang(data) {
-    const tbody = document.getElementById('tabelBarang');
-    
-    if (data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 3rem;">
-        <i class="fas fa-box-open" style="font-size: 3rem; color: var(--primary-light);"></i>
-        <p style="margin-top: 1rem; color: var(--gray);">Belum ada data barang</p>
-        <p style="color: var(--gray);">Tambah barang baru untuk memulai</p>
-      </td></tr>`;
-      return;
-    }
-    
-    tbody.innerHTML = data.map(b => {
-      const actionButtons = currentRole === 'admin' 
-        ? `<div class="action-buttons">
-            <button class="btn-edit" style="padding:0.4rem 1rem;" onclick="editBarang('${b.id}', '${b.kode}', '${b.nama}', '${b.kategori}', ${b.jumlah}, '${b.gambar}', '${b.thumbnail}', '${b.imgbb_delete_url || ''}')">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn-danger" style="padding:0.4rem 1rem;" onclick="hapusBarang('${b.id}', '${b.imgbb_delete_url || ''}')">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>`
-        : '<span style="color:var(--gray);">-</span>';
-      
-      return `<tr>
-        <td><span style="background:var(--primary-light); padding:0.3rem 0.7rem; border-radius:2rem; font-weight:600;">${b.kode || '-'}</span></td>
-        <td><img src="${b.thumbnail || b.gambar || 'https://via.placeholder.com/50'}" class="img-preview" onclick="window.open('${b.gambar}', '_blank')"></td>
-        <td><strong>${b.nama || '-'}</strong></td>
-        <td>${b.kategori || '-'}</td>
-        <td><span style="font-weight:700;">${b.jumlah || 0}</span></td>
-        <td>${getStatusBadge(b.jumlah || 0)}</td>
-        <td>${actionButtons}</td>
-      </tr>`;
-    }).join('');
-  }
-
-  // ========== INIT CHARTS ==========
-  function initCharts() {
-    const stockCtx = document.getElementById('stockChart')?.getContext('2d');
-    if (stockCtx) {
-      stockChart = new Chart(stockCtx, {
-        type: 'bar',
-        data: {
-          labels: [],
-          datasets: [{
-            label: 'Jumlah Stok',
-            data: [],
-            backgroundColor: '#0284c7',
-            borderRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          }
-        }
-      });
-    }
-
-    const pinjamCtx = document.getElementById('pinjamChart')?.getContext('2d');
-    if (pinjamCtx) {
-      pinjamChart = new Chart(pinjamCtx, {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: 'Jumlah Peminjaman',
-            data: [],
-            borderColor: '#0284c7',
-            backgroundColor: 'rgba(2, 132, 199, 0.1)',
-            tension: 0.4,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
-    }
-  }
-
-  // ========== UPDATE CHARTS ==========
-  function updateCharts() {
-    // Update stock chart
-    if (stockChart && barangData.length > 0) {
-      const top5 = [...barangData].sort((a, b) => (b.jumlah || 0) - (a.jumlah || 0)).slice(0, 5);
-      stockChart.data.labels = top5.map(b => b.nama?.substring(0, 10) + (b.nama?.length > 10 ? '...' : ''));
-      stockChart.data.datasets[0].data = top5.map(b => b.jumlah || 0);
-      stockChart.update();
-    }
-
-    // Update pinjam chart
-    if (pinjamChart && pinjamData.length > 0) {
-      const last7Days = [];
-      const today = new Date();
-      
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        const dateStr = date.toISOString().split('T')[0];
-        last7Days.push(dateStr);
-      }
-
-      const pinjamCounts = last7Days.map(date => {
-        return pinjamData.filter(p => p.tanggal === date).length;
-      });
-
-      pinjamChart.data.labels = last7Days.map(date => {
-        const d = new Date(date);
-        return `${d.getDate()}/${d.getMonth() + 1}`;
-      });
-      pinjamChart.data.datasets[0].data = pinjamCounts;
-      pinjamChart.update();
-    }
-  }
-
-  // ========== LOAD DATA ==========
+  // LOAD REAL TIME
   function loadData() {
-    // LOAD BARANG
-    db.collection('barang').onSnapshot(snapshot => {
-      barangData = [];
-      let totalStok = 0;
-      let totalMenipis = 0;
-      
-      snapshot.forEach(doc => {
-        const b = { id: doc.id, ...doc.data() };
-        barangData.push(b);
-        totalStok += b.jumlah || 0;
-        if (b.jumlah > 0 && b.jumlah <= 5) totalMenipis++;
-      });
-      
-      document.getElementById('totalBarang').innerText = snapshot.size;
-      document.getElementById('totalTersedia').innerText = totalStok;
-      document.getElementById('totalMenipis').innerText = totalMenipis;
-      
-      filterBarang();
-      updateCharts();
-      
+    db.collection('barang').onSnapshot(snap => {
+      const tbody = document.getElementById('tabelBarang');
       const select = document.getElementById('barangSelect');
-      if (select) {
-        select.innerHTML = '<option value="">Pilih Barang</option>';
-        barangData.filter(b => b.jumlah > 0).forEach(b => {
-          select.innerHTML += `<option value="${b.id}">${b.nama} (Stok: ${b.jumlah})</option>`;
-        });
-      }
+      tbody.innerHTML = '';
+      select.innerHTML = '';
+      document.getElementById('totalBarang').innerText = snap.size;
+      let totalStok = 0;
+
+      snap.forEach(doc => {
+        const b = doc.data();
+        totalStok += b.jumlah || 0;
+        tbody.innerHTML += `<tr>
+          <td><span style="background:#e0f2fe; padding:0.3rem 0.7rem; border-radius:2rem; font-weight:600;">${b.kode}</span></td>
+          <td><strong>${b.nama}</strong></td>
+          <td><span style="background:#f1f5f9; padding:0.2rem 0.9rem; border-radius:2rem;">${b.jumlah}</span></td>
+          <td>${b.gambar ? `<img src="${b.gambar}" class="img-preview">` : '-'}</td>
+          <td><button class="btn-danger" onclick="hapusBarang('${doc.id}')" style="padding:0.4rem 1.2rem;"><i class="fas fa-trash"></i> Hapus</button></td>
+        </tr>`;
+        select.innerHTML += `<option value="${doc.id}">${b.nama} (stok ${b.jumlah})</option>`;
+      });
+      document.getElementById('totalStokBersih').innerText = totalStok;
     });
 
-    // LOAD PEMINJAMAN
-    db.collection('pinjam').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-      pinjamData = [];
-      let totalAktif = 0;
-      
-      snapshot.forEach(doc => {
-        const p = { id: doc.id, ...doc.data() };
-        pinjamData.push(p);
-        if (p.status === 'aktif') totalAktif++;
+    db.collection('pinjam').onSnapshot(snap => {
+      const tbody = document.getElementById('tabelPinjam');
+      tbody.innerHTML = '';
+      document.getElementById('totalPinjam').innerText = snap.size;
+      snap.forEach(doc => {
+        const p = doc.data();
+        tbody.innerHTML += `<tr><td><i class="fas fa-user-graduate" style="color:#0284c7;"></i> ${p.nama}</td><td>${p.barang}</td><td><span style="background:#fef3c7; padding:0.2rem 0.9rem; border-radius:2rem;">${p.jumlah}</span></td></tr>`;
       });
-      
-      document.getElementById('totalPinjam').innerText = totalAktif;
-      updateCharts();
-      
-      // PEMINJAMAN AKTIF
-      const aktifTbody = document.getElementById('tabelPinjamAktif');
-      const aktif = pinjamData.filter(p => p.status === 'aktif');
-      
-      if (aktif.length === 0) {
-        aktifTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem;">
-          <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--success);"></i>
-          <p style="margin-top: 0.5rem;">Tidak ada peminjaman aktif</p>
-        </td></tr>`;
-      } else {
-        aktifTbody.innerHTML = aktif.map(p => `
-          <tr>
-            <td><i class="fas fa-user"></i> ${p.peminjam}</td>
-            <td>${p.barangNama}</td>
-            <td><span style="font-weight:600;">${p.jumlah}</span></td>
-            <td>${p.tanggal || '-'}</td>
-            <td>
-              <button class="btn-success" style="padding:0.4rem 1rem;" onclick="kembalikanBarang('${p.id}','${p.barangId}',${p.jumlah})">
-                <i class="fas fa-undo"></i> Kembali
-              </button>
-            </td>
-          </tr>
-        `).join('');
-      }
-      
-      // RIWAYAT
-      const riwayatTbody = document.getElementById('tabelRiwayat');
-      const riwayat = pinjamData.filter(p => p.status === 'kembali').slice(0, 20);
-      
-      if (riwayat.length === 0) {
-        riwayatTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem;">
-          <i class="fas fa-history" style="font-size: 2rem; color: var(--gray);"></i>
-          <p style="margin-top: 0.5rem;">Belum ada riwayat peminjaman</p>
-        </td></tr>`;
-      } else {
-        riwayatTbody.innerHTML = riwayat.map(p => `
-          <tr>
-            <td>${p.peminjam}</td>
-            <td>${p.barangNama}</td>
-            <td>${p.jumlah}</td>
-            <td>${p.tanggal || '-'}</td>
-            <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Kembali</span></td>
-          </tr>
-        `).join('');
-      }
-      
-      // RECENT PINJAM
-      const recentDiv = document.getElementById('recentPinjam');
-      if (recentDiv) {
-        recentDiv.innerHTML = pinjamData.slice(0, 5).map(p => `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.8rem; border-bottom:1px solid var(--border);">
-            <div>
-              <strong>${p.peminjam}</strong>
-              <span style="color:var(--gray); margin-left:0.5rem;">- ${p.barangNama}</span>
-            </div>
-            <span class="badge ${p.status === 'aktif' ? 'badge-warning' : 'badge-success'}">
-              ${p.status === 'aktif' ? 'Aktif' : 'Kembali'}
-            </span>
-          </div>
-        `).join('');
-        
-        if (pinjamData.length === 0) {
-          recentDiv.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--gray);">
-            <i class="fas fa-inbox" style="font-size:2rem;"></i>
-            <p style="margin-top:0.5rem;">Belum ada peminjaman</p>
-          </div>`;
-        }
-      }
     });
   }
 
-  // ========== EXPORT EXCEL ==========
-  function exportExcel() {
-    try {
-      const wsData = [
-        ['Kode', 'Nama Barang', 'Kategori', 'Stok', 'Status']
-      ];
-      
-      barangData.forEach(b => {
-        let status = '';
-        if (b.jumlah <= 0) status = 'Habis';
-        else if (b.jumlah <= 5) status = 'Stok Menipis';
-        else status = 'Tersedia';
-        
-        wsData.push([b.kode, b.nama, b.kategori || '-', b.jumlah, status]);
-      });
-      
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, 'Inventaris');
-      XLSX.writeFile(wb, `inventaris_sd_${new Date().getTime()}.xlsx`);
-      
-      showToast('✅ Export Excel berhasil!', 'success');
-    } catch (error) {
-      showToast('❌ Gagal export: ' + error.message, 'error');
-    }
+  async function hapusBarang(id) {
+    if (!confirm('Yakin menghapus barang ini?')) return;
+    await db.collection('barang').doc(id).delete();
+  }
+
+  async function pinjamBarang() {
+    const id = document.getElementById('barangSelect').value;
+    const peminjam = document.getElementById('peminjam');
+    const jumlahPinjam = document.getElementById('jumlahPinjam');
+    const j = parseInt(jumlahPinjam.value);
+    if (!id || !peminjam.value || !j) return alert('Lengkapi data peminjaman!');
+
+    const docRef = db.collection('barang').doc(id);
+    const data = (await docRef.get()).data();
+    if (j > data.jumlah) return alert('Stok tidak mencukupi');
+
+    await docRef.update({ jumlah: data.jumlah - j });
+    await db.collection('pinjam').add({
+      nama: peminjam.value,
+      barang: data.nama,
+      jumlah: j
+    });
+    peminjam.value = '';
+    jumlahPinjam.value = '';
+  }
+
+  async function cetakPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('LAPORAN INVENTARIS SD LAZUARDI', 20, 20);
+    doc.setFontSize(11);
+    doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 20, 30);
+    let y = 45;
+    const snapshot = await db.collection('barang').get();
+    let no = 1;
+    snapshot.forEach(d => {
+      const b = d.data();
+      doc.text(`${no}. ${b.kode} - ${b.nama}  |  Jumlah: ${b.jumlah}`, 20, y);
+      y += 8;
+      no++;
+    });
+    if (y > 270) y = 20; // handle page
+    doc.save('Laporan_Inventaris_SD.pdf');
   }
 
   window.onload = cekLogin;
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
