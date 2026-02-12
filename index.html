@@ -27,7 +27,6 @@
       line-height: 1.5;
     }
 
-    /* LOGIN MODERN */
     .login-container {
       min-height: 100vh;
       display: flex;
@@ -128,7 +127,6 @@
       gap: 0.5rem;
     }
 
-    /* LAYOUT UTAMA — SIDEBAR ELEGAN */
     .layout {
       display: none;
       min-height: 100vh;
@@ -197,20 +195,19 @@
     .logout-btn {
       background: rgba(239,68,68,0.15);
       border: 1px solid rgba(239,68,68,0.2);
+      margin-top: 20px !important;
     }
 
     .logout-btn:hover {
       background: rgba(239,68,68,0.3) !important;
     }
 
-    /* CONTENT AREA */
     .content {
       margin-left: 280px;
       padding: 2rem 2.5rem;
       width: calc(100% - 280px);
     }
 
-    /* CARD CANTIK */
     .card {
       background: white;
       border-radius: 1.75rem;
@@ -237,8 +234,7 @@
       padding-bottom: 0.8rem;
     }
 
-    /* FORM INPUT */
-    input, select {
+    input, select, textarea {
       background: #f8fafc;
       border: 2px solid #e2e8f0;
       border-radius: 1.2rem;
@@ -250,14 +246,18 @@
       outline: none;
     }
 
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: #0284c7;
       background: white;
       box-shadow: 0 0 0 4px #bae6fd;
     }
 
-    /* BUTTONS */
-    .btn, .btn-warning, .btn-danger {
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn, .btn-warning, .btn-danger, .btn-edit, .btn-success {
       border: none;
       padding: 0.8rem 1.8rem;
       border-radius: 2rem;
@@ -301,7 +301,24 @@
       transform: translateY(-2px);
     }
 
-    /* TABLE MODERN */
+    .btn-edit {
+      background: #64748b;
+      color: white;
+    }
+    .btn-edit:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
     .table-wrapper {
       overflow-x: auto;
       border-radius: 1.2rem;
@@ -344,7 +361,15 @@
       box-shadow: 0 6px 12px rgba(0,0,0,0.06);
     }
 
-    /* STATS CARD DASHBOARD */
+    .img-profile {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 2rem;
+      border: 4px solid white;
+      box-shadow: 0 12px 24px rgba(2,132,199,0.2);
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -390,7 +415,7 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .file-label {
@@ -405,7 +430,6 @@
       width: 100%;
     }
 
-    /* cetak btn */
     .cetak-btn {
       background: #334155;
       color: white;
@@ -415,17 +439,119 @@
       background: #1e293b;
     }
 
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 2rem;
+      padding: 2.5rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-header h3 {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-role {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.3rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .profile-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .profile-detail-item {
+      background: #f8fafc;
+      padding: 1.2rem;
+      border-radius: 1.2rem;
+    }
+
+    .profile-detail-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .profile-detail-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
     @media (max-width: 900px) {
       .sidebar { width: 100px; padding: 1rem; }
       .sidebar h2 span { display: none; }
       .menu a span { display: none; }
       .content { margin-left: 100px; width: calc(100% - 100px); }
+      .profile-header { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-<!-- HALAMAN LOGIN — ELEGAN -->
+<!-- HALAMAN LOGIN -->
 <div id="loginPage" class="login-container">
   <div class="glass-card">
     <h2><i class="fas fa-school"></i> Lazuardi</h2>
@@ -451,7 +577,7 @@
 
 <!-- APLIKASI UTAMA -->
 <div class="layout" id="app">
-  <!-- SIDEBAR PREMIUM -->
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <h2><i class="fas fa-cubes"></i> <span>SD Lazuardi</span></h2>
     <div class="menu">
@@ -464,6 +590,9 @@
       <a onclick="showPage('pinjam')" id="menu-pinjam">
         <i class="fas fa-hand-holding"></i> <span>Peminjaman</span>
       </a>
+      <a onclick="showPage('profil')" id="menu-profil">
+        <i class="fas fa-user-circle"></i> <span>Profil Admin</span>
+      </a>
       <a onclick="logout()" class="logout-btn">
         <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
       </a>
@@ -474,8 +603,7 @@
   </div>
 
   <div class="content">
-
-    <!-- DASHBOARD MODERN -->
+    <!-- DASHBOARD -->
     <div id="dashboard">
       <div class="stats-grid">
         <div class="stat-item">
@@ -501,35 +629,61 @@
         </div>
       </div>
       <div class="card" style="margin-top: 0.5rem;">
-        <h3><i class="fas fa-flag-checkered"></i> Selamat Datang, Admin!</h3>
+        <h3><i class="fas fa-flag-checkered"></i> Selamat Datang, <span id="adminName">Admin</span>!</h3>
         <p style="color: #334155;">Pantau dan kelola inventaris sekolah dengan mudah. Gunakan menu di samping untuk memulai.</p>
+        <div style="margin-top: 1rem; display: flex; gap: 1rem; align-items: center;">
+          <i class="fas fa-calendar" style="color: #0284c7;"></i>
+          <span id="currentDate"></span>
+        </div>
       </div>
     </div>
 
-    <!-- DATA BARANG — BETTER UI -->
+    <!-- DATA BARANG -->
     <div id="barang" class="hidden">
       <div class="card">
         <h3><i class="fas fa-plus-circle"></i> Tambah Barang</h3>
         <div style="display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));">
           <input id="nama" placeholder="Nama barang">
           <input id="jumlah" type="number" placeholder="Jumlah">
+          <select id="kategori">
+            <option value="">-- Pilih Kategori --</option>
+            <option value="Elektronik">Elektronik</option>
+            <option value="Perabot">Perabot</option>
+            <option value="ATK">ATK</option>
+            <option value="Olahraga">Olahraga</option>
+            <option value="Kesenian">Kesenian</option>
+            <option value="Umum">Umum</option>
+          </select>
+          <input id="stokMinimal" type="number" placeholder="Stok Minimal" value="5">
           <div style="grid-column: span 2;">
-            <label for="gambar" class="file-label"><i class="fas fa-cloud-upload-alt"></i> Pilih Gambar</label>
-            <input id="gambar" type="file" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+            <label for="gambar" class="file-label" id="tambahFileLabel"><i class="fas fa-cloud-upload-alt"></i> Pilih Gambar</label>
+            <input id="gambar" type="file" accept="image/*" style="display: none;" onchange="updateFileName(this, 'tambahFileLabel')">
           </div>
         </div>
-        <button class="btn" onclick="tambahBarang()" style="margin-top: 1.2rem; width: auto; padding: 0.9rem 2.5rem;"><i class="fas fa-save"></i> Simpan Barang</button>
+        <button class="btn" onclick="tambahBarang()" style="margin-top: 1.2rem; width: auto; padding: 0.9rem 2.5rem;">
+          <i class="fas fa-save"></i> Simpan Barang
+        </button>
       </div>
 
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
           <h3><i class="fas fa-list-ul"></i> Daftar Barang</h3>
-          <button class="btn cetak-btn" onclick="cetakPDF()"><i class="fas fa-file-pdf"></i> Cetak Laporan</button>
+          <button class="btn cetak-btn" onclick="cetakPDF()">
+            <i class="fas fa-file-pdf"></i> Cetak Laporan PDF (A4)
+          </button>
         </div>
         <div class="table-wrapper">
           <table>
             <thead>
-              <tr><th>Kode</th><th>Nama</th><th>Jumlah</th><th>Gambar</th><th>Aksi</th></tr>
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Jumlah</th>
+                <th>Kategori</th>
+                <th>Stok Min</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+              </tr>
             </thead>
             <tbody id="tabelBarang"></tbody>
           </table>
@@ -537,7 +691,7 @@
       </div>
     </div>
 
-    <!-- PEMINJAMAN — CLEAN -->
+    <!-- PEMINJAMAN -->
     <div id="pinjam" class="hidden">
       <div class="card">
         <h3><i class="fas fa-pen"></i> Form Peminjaman</h3>
@@ -545,7 +699,9 @@
           <input id="peminjam" placeholder="Nama peminjam">
           <select id="barangSelect" style="margin-bottom: 0;"></select>
           <input id="jumlahPinjam" type="number" placeholder="Jumlah dipinjam">
-          <button class="btn-warning" onclick="pinjamBarang()" style="margin-bottom: 0;"><i class="fas fa-hand-holding-heart"></i> Pinjam</button>
+          <button class="btn-warning" onclick="pinjamBarang()" style="margin-bottom: 0;">
+            <i class="fas fa-hand-holding-heart"></i> Pinjam
+          </button>
         </div>
       </div>
 
@@ -553,17 +709,186 @@
         <h3><i class="fas fa-history"></i> Riwayat Peminjaman</h3>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>Nama</th><th>Barang</th><th>Jumlah</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Barang</th>
+                <th>Jumlah</th>
+                <th>Waktu</th>
+              </tr>
+            </thead>
             <tbody id="tabelPinjam"></tbody>
           </table>
         </div>
       </div>
     </div>
 
+    <!-- HALAMAN PROFIL ADMIN -->
+    <div id="profil" class="hidden">
+      <div class="card">
+        <h3><i class="fas fa-id-card"></i> Profil Administrator</h3>
+        
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div style="position: relative;">
+            <img id="profileImage" src="https://ui-avatars.com/api/?name=Admin+SD&background=0c4a6e&color=fff&size=120" class="img-profile" alt="Profile">
+            <label for="profilePhoto" style="position: absolute; bottom: 5px; right: 5px; background: #0284c7; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid white;">
+              <i class="fas fa-camera"></i>
+            </label>
+            <input id="profilePhoto" type="file" accept="image/*" style="display: none;" onchange="updateProfilePhoto(this)">
+          </div>
+          <div class="profile-info">
+            <h2 style="font-size: 2rem; font-weight: 700; color: #0c4a6e; margin-bottom: 0.5rem;" id="profileFullName">Admin SD Lazuardi</h2>
+            <div class="profile-role">
+              <i class="fas fa-shield-alt"></i> Administrator Utama
+            </div>
+            <p style="color: #475569; margin-top: 0.8rem;" id="profileBio">Pengelola inventaris sekolah dasar Lazuardi</p>
+          </div>
+        </div>
+
+        <!-- Form Edit Profil -->
+        <div style="background: #f0f9ff; border-radius: 1.5rem; padding: 1.5rem; margin-top: 1rem;">
+          <h4 style="display: flex; align-items: center; gap: 0.5rem; color: #075985; margin-bottom: 1.2rem;">
+            <i class="fas fa-pencil-alt"></i> Edit Informasi Profil
+          </h4>
+          
+          <div class="profile-detail-grid">
+            <div>
+              <div class="profile-detail-label"><i class="fas fa-user"></i> Nama Lengkap</div>
+              <input type="text" id="editFullName" placeholder="Nama lengkap" value="Admin SD Lazuardi">
+            </div>
+            <div>
+              <div class="profile-detail-label"><i class="fas fa-envelope"></i> Email</div>
+              <input type="email" id="editEmail" placeholder="Email" value="admin@lazuardi.sch.id" readonly style="background: #e2e8f0;">
+            </div>
+            <div>
+              <div class="profile-detail-label"><i class="fas fa-phone"></i> Nomor HP</div>
+              <input type="text" id="editPhone" placeholder="Nomor HP" value="0812-3456-7890">
+            </div>
+            <div>
+              <div class="profile-detail-label"><i class="fas fa-map-marker-alt"></i> Alamat</div>
+              <input type="text" id="editAddress" placeholder="Alamat" value="Jl. Pendidikan No. 123, Jakarta">
+            </div>
+            <div style="grid-column: span 2;">
+              <div class="profile-detail-label"><i class="fas fa-info-circle"></i> Bio / Tentang</div>
+              <textarea id="editBio" placeholder="Ceritakan tentang diri Anda">Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.</textarea>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button class="btn-success" onclick="simpanProfil()" style="padding: 0.9rem 2rem;">
+              <i class="fas fa-save"></i> Simpan Perubahan Profil
+            </button>
+            <button class="btn-warning" onclick="bukaModalGantiPassword()" style="padding: 0.9rem 2rem;">
+              <i class="fas fa-key"></i> Ganti Password
+            </button>
+          </div>
+        </div>
+
+        <!-- Statistik Aktivitas -->
+        <div style="margin-top: 2rem;">
+          <h4 style="display: flex; align-items: center; gap: 0.5rem; color: #075985; margin-bottom: 1rem;">
+            <i class="fas fa-chart-line"></i> Statistik Aktivitas
+          </h4>
+          <div class="stats-grid">
+            <div class="stat-item" style="padding: 1.2rem;">
+              <div class="stat-icon" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-boxes"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Total Input</h4>
+                <span id="totalBarangProfil">0</span>
+              </div>
+            </div>
+            <div class="stat-item" style="padding: 1.2rem;">
+              <div class="stat-icon" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-hand-holding"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Total Peminjaman</h4>
+                <span id="totalPinjamProfil">0</span>
+              </div>
+            </div>
+            <div class="stat-item" style="padding: 1.2rem;">
+              <div class="stat-icon" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-content">
+                <h4>Terdaftar</h4>
+                <span id="memberSince">2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIT BARANG -->
+<div id="editModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-edit"></i> Edit Barang</h3>
+      <button class="close-btn" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div style="display: grid; gap: 1rem;">
+      <input id="editNama" placeholder="Nama barang">
+      <input id="editJumlah" type="number" placeholder="Jumlah">
+      <select id="editKategori">
+        <option value="">-- Pilih Kategori --</option>
+        <option value="Elektronik">Elektronik</option>
+        <option value="Perabot">Perabot</option>
+        <option value="ATK">ATK</option>
+        <option value="Olahraga">Olahraga</option>
+        <option value="Kesenian">Kesenian</option>
+        <option value="Umum">Umum</option>
+      </select>
+      <input id="editStokMinimal" type="number" placeholder="Stok Minimal">
+      <div>
+        <label for="editGambar" class="file-label" id="editFileLabel">
+          <i class="fas fa-cloud-upload-alt"></i> Ganti Gambar (opsional)
+        </label>
+        <input id="editGambar" type="file" accept="image/*" style="display: none;" onchange="updateFileName(this, 'editFileLabel')">
+      </div>
+      <div id="editGambarPreview" style="text-align: center; margin-top: 0.5rem;"></div>
+    </div>
+    <div class="btn-group">
+      <button class="btn" onclick="simpanEditBarang()" style="flex: 1;">
+        <i class="fas fa-save"></i> Simpan Perubahan
+      </button>
+      <button class="btn-edit" onclick="closeEditModal()" style="flex: 1;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GANTI PASSWORD -->
+<div id="passwordModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-key"></i> Ganti Password</h3>
+      <button class="close-btn" onclick="closePasswordModal()">&times;</button>
+    </div>
+    <div style="display: grid; gap: 1rem;">
+      <input type="password" id="oldPassword" placeholder="Password Lama">
+      <input type="password" id="newPassword" placeholder="Password Baru">
+      <input type="password" id="confirmPassword" placeholder="Konfirmasi Password Baru">
+    </div>
+    <div class="btn-group">
+      <button class="btn-warning" onclick="gantiPassword()" style="flex: 1;">
+        <i class="fas fa-save"></i> Simpan Password
+      </button>
+      <button class="btn-edit" onclick="closePasswordModal()" style="flex: 1;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
   </div>
 </div>
 
 <script>
+  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyAVeXYR1sI6YC9xOVhlBSbf0RFMr9Ams1g",
     authDomain: "inventaris-sd.firebaseapp.com",
@@ -573,19 +898,36 @@
     appId: "1:421661627652:web:9ae755b3a997b8544e6c51",
     measurementId: "G-SVNDR0ZRW6"
   };
-  firebase.initializeApp(firebaseConfig);
+  
+  // Inisialisasi Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const db = firebase.firestore();
 
   const ADMIN_USER = "admin";
   const ADMIN_PASS = "lazuardi";
+
+  // Variabel global
+  let editBarangId = null;
+  let editBarangData = null;
 
   // LOGIN
   function login() {
     const username = document.getElementById('username');
     const password = document.getElementById('password');
     const loginError = document.getElementById('loginError');
+    
     if (username.value === ADMIN_USER && password.value === ADMIN_PASS) {
       localStorage.setItem('login', 'true');
+      localStorage.setItem('adminData', JSON.stringify({
+        nama: 'Admin SD Lazuardi',
+        email: 'admin@lazuardi.sch.id',
+        phone: '0812-3456-7890',
+        address: 'Jl. Pendidikan No. 123, Jakarta',
+        bio: 'Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.',
+        photo: null
+      }));
       cekLogin();
     } else {
       loginError.style.display = 'flex';
@@ -601,135 +943,725 @@
     if (localStorage.getItem('login') === 'true') {
       document.getElementById('loginPage').style.display = 'none';
       document.getElementById('app').style.display = 'flex';
+      
+      // Load data profil
+      loadProfilData();
+      
+      // Tampilkan tanggal
+      const date = new Date();
+      document.getElementById('currentDate').innerHTML = date.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
       loadData();
     }
   }
 
   function showPage(id) {
-    ['dashboard','barang','pinjam'].forEach(p => document.getElementById(p).classList.add('hidden'));
+    // Sembunyikan semua page
+    document.getElementById('dashboard').classList.add('hidden');
+    document.getElementById('barang').classList.add('hidden');
+    document.getElementById('pinjam').classList.add('hidden');
+    document.getElementById('profil').classList.add('hidden');
+    
+    // Tampilkan page yang dipilih
     document.getElementById(id).classList.remove('hidden');
-    // active menu
+    
+    // Update active menu
     document.querySelectorAll('.menu a').forEach(el => el.classList.remove('active'));
     document.getElementById(`menu-${id}`).classList.add('active');
-  }
-
-  function updateFileName(input) {
-    if (input.files.length > 0) {
-      let label = document.querySelector('.file-label');
-      if (label) label.innerHTML = `<i class="fas fa-check-circle"></i> ${input.files[0].name}`;
+    
+    // Update statistik profil jika halaman profil dibuka
+    if (id === 'profil') {
+      updateProfilStats();
     }
   }
 
-  // TAMBAH BARANG DENGAN GAMBAR
+  function updateFileName(input, labelId) {
+    if (input.files.length > 0) {
+      const label = document.getElementById(labelId);
+      if (label) {
+        label.innerHTML = `<i class="fas fa-check-circle"></i> ${input.files[0].name}`;
+      }
+    }
+  }
+
+  // FUNGSI PROFIL
+  function loadProfilData() {
+    const adminData = JSON.parse(localStorage.getItem('adminData') || '{}');
+    
+    // Set nama admin di dashboard
+    document.getElementById('adminName').innerText = adminData.nama || 'Admin';
+    
+    // Set data di halaman profil
+    document.getElementById('profileFullName').innerText = adminData.nama || 'Admin SD Lazuardi';
+    document.getElementById('editFullName').value = adminData.nama || 'Admin SD Lazuardi';
+    document.getElementById('editEmail').value = adminData.email || 'admin@lazuardi.sch.id';
+    document.getElementById('editPhone').value = adminData.phone || '0812-3456-7890';
+    document.getElementById('editAddress').value = adminData.address || 'Jl. Pendidikan No. 123, Jakarta';
+    document.getElementById('editBio').value = adminData.bio || 'Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.';
+    document.getElementById('profileBio').innerText = adminData.bio || 'Pengelola inventaris sekolah dasar Lazuardi';
+    
+    // Set foto profil
+    if (adminData.photo) {
+      document.getElementById('profileImage').src = adminData.photo;
+    }
+  }
+
+  function updateProfilePhoto(input) {
+    if (input.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('profileImage').src = e.target.result;
+        
+        // Simpan ke localStorage
+        const adminData = JSON.parse(localStorage.getItem('adminData') || '{}');
+        adminData.photo = e.target.result;
+        localStorage.setItem('adminData', JSON.stringify(adminData));
+        
+        alert('Foto profil berhasil diperbarui!');
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function simpanProfil() {
+    const adminData = {
+      nama: document.getElementById('editFullName').value,
+      email: document.getElementById('editEmail').value,
+      phone: document.getElementById('editPhone').value,
+      address: document.getElementById('editAddress').value,
+      bio: document.getElementById('editBio').value,
+      photo: JSON.parse(localStorage.getItem('adminData') || '{}').photo
+    };
+    
+    localStorage.setItem('adminData', JSON.stringify(adminData));
+    
+    // Update tampilan
+    document.getElementById('adminName').innerText = adminData.nama;
+    document.getElementById('profileFullName').innerText = adminData.nama;
+    document.getElementById('profileBio').innerText = adminData.bio;
+    
+    alert('Profil berhasil diperbarui!');
+  }
+
+  function bukaModalGantiPassword() {
+    document.getElementById('passwordModal').classList.remove('hidden');
+  }
+
+  function closePasswordModal() {
+    document.getElementById('passwordModal').classList.add('hidden');
+    document.getElementById('oldPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+  }
+
+  function gantiPassword() {
+    const oldPass = document.getElementById('oldPassword').value;
+    const newPass = document.getElementById('newPassword').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+    
+    if (!oldPass || !newPass || !confirmPass) {
+      alert('Semua field harus diisi!');
+      return;
+    }
+    
+    if (oldPass !== ADMIN_PASS) {
+      alert('Password lama salah!');
+      return;
+    }
+    
+    if (newPass !== confirmPass) {
+      alert('Password baru dan konfirmasi tidak cocok!');
+      return;
+    }
+    
+    if (newPass.length < 6) {
+      alert('Password minimal 6 karakter!');
+      return;
+    }
+    
+    alert('Password berhasil diganti! Silakan login ulang.');
+    closePasswordModal();
+    logout();
+  }
+
+  async function updateProfilStats() {
+    try {
+      const barangSnapshot = await db.collection('barang').get();
+      const pinjamSnapshot = await db.collection('pinjam').get();
+      
+      document.getElementById('totalBarangProfil').innerText = barangSnapshot.size;
+      document.getElementById('totalPinjamProfil').innerText = pinjamSnapshot.size;
+    } catch (error) {
+      console.error('Error update profil stats:', error);
+    }
+  }
+
+  // TAMBAH BARANG
   async function tambahBarang() {
     const nama = document.getElementById('nama');
     const jumlah = document.getElementById('jumlah');
     const gambar = document.getElementById('gambar');
-    if (!nama.value || !jumlah.value || !gambar.files[0]) return alert('Lengkapi semua data!');
+    const kategori = document.getElementById('kategori');
+    const stokMinimal = document.getElementById('stokMinimal');
+    
+    if (!nama.value.trim()) {
+      alert('Nama barang harus diisi!');
+      nama.focus();
+      return;
+    }
+    
+    if (!jumlah.value) {
+      alert('Jumlah harus diisi!');
+      jumlah.focus();
+      return;
+    }
+    
+    if (parseInt(jumlah.value) < 0) {
+      alert('Jumlah tidak boleh negatif!');
+      jumlah.focus();
+      return;
+    }
+    
+    if (!kategori.value) {
+      alert('Pilih kategori barang!');
+      kategori.focus();
+      return;
+    }
+    
+    if (!gambar.files[0]) {
+      alert('Pilih gambar terlebih dahulu!');
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = async function (e) {
-      const snapshot = await db.collection('barang').get();
-      const kode = 'SD-' + String(snapshot.size + 1).padStart(3, '0');
-      await db.collection('barang').add({
-        kode,
-        nama: nama.value,
-        jumlah: parseInt(jumlah.value),
-        gambar: e.target.result
-      });
-      nama.value = '';
-      jumlah.value = '';
-      gambar.value = '';
-      document.querySelector('.file-label').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Pilih Gambar';
+      try {
+        const snapshot = await db.collection('barang').get();
+        const kode = 'SD-' + String(snapshot.size + 1).padStart(3, '0');
+        
+        await db.collection('barang').add({
+          kode: kode,
+          nama: nama.value.trim(),
+          jumlah: parseInt(jumlah.value),
+          kategori: kategori.value,
+          stokMinimal: parseInt(stokMinimal.value) || 5,
+          gambar: e.target.result,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Reset form
+        nama.value = '';
+        jumlah.value = '';
+        kategori.value = '';
+        stokMinimal.value = '5';
+        gambar.value = '';
+        document.getElementById('tambahFileLabel').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Pilih Gambar';
+        
+        alert('Barang berhasil ditambahkan!');
+      } catch (error) {
+        console.error('Error tambah barang:', error);
+        alert('Gagal menambahkan barang: ' + error.message);
+      }
     };
     reader.readAsDataURL(gambar.files[0]);
   }
 
-  // LOAD REAL TIME
+  // FUNGSI EDIT BARANG
+  async function editBarang(id) {
+    try {
+      editBarangId = id;
+      const doc = await db.collection('barang').doc(id).get();
+      
+      if (!doc.exists) {
+        alert('Data barang tidak ditemukan!');
+        return;
+      }
+      
+      editBarangData = doc.data();
+      
+      // Isi form edit
+      document.getElementById('editNama').value = editBarangData.nama || '';
+      document.getElementById('editJumlah').value = editBarangData.jumlah || 0;
+      document.getElementById('editKategori').value = editBarangData.kategori || 'Umum';
+      document.getElementById('editStokMinimal').value = editBarangData.stokMinimal || 5;
+      
+      // Tampilkan preview gambar
+      if (editBarangData.gambar) {
+        document.getElementById('editGambarPreview').innerHTML = `
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 0.5rem;">Gambar saat ini:</p>
+          <img src="${editBarangData.gambar}" class="img-preview" style="width: 100px; height: 100px;">
+        `;
+      } else {
+        document.getElementById('editGambarPreview').innerHTML = '';
+      }
+      
+      // Reset file input
+      document.getElementById('editFileLabel').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Ganti Gambar (opsional)';
+      document.getElementById('editGambar').value = '';
+      
+      // Tampilkan modal
+      document.getElementById('editModal').classList.remove('hidden');
+      
+    } catch (error) {
+      console.error('Error edit barang:', error);
+      alert('Gagal memuat data barang: ' + error.message);
+    }
+  }
+
+  // SIMPAN EDIT BARANG
+  async function simpanEditBarang() {
+    if (!editBarangId) {
+      alert('ID Barang tidak ditemukan!');
+      return;
+    }
+    
+    const nama = document.getElementById('editNama').value.trim();
+    const jumlah = document.getElementById('editJumlah').value;
+    const kategori = document.getElementById('editKategori').value;
+    const stokMinimal = document.getElementById('editStokMinimal').value;
+    const gambarFile = document.getElementById('editGambar').files[0];
+    
+    if (!nama) {
+      alert('Nama barang harus diisi!');
+      document.getElementById('editNama').focus();
+      return;
+    }
+    
+    if (!jumlah) {
+      alert('Jumlah harus diisi!');
+      document.getElementById('editJumlah').focus();
+      return;
+    }
+    
+    if (parseInt(jumlah) < 0) {
+      alert('Jumlah tidak boleh negatif!');
+      document.getElementById('editJumlah').focus();
+      return;
+    }
+    
+    if (!kategori) {
+      alert('Pilih kategori barang!');
+      document.getElementById('editKategori').focus();
+      return;
+    }
+    
+    try {
+      const updateData = {
+        nama: nama,
+        jumlah: parseInt(jumlah),
+        kategori: kategori,
+        stokMinimal: parseInt(stokMinimal) || 5,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      if (gambarFile) {
+        // Jika ada gambar baru
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          updateData.gambar = e.target.result;
+          await db.collection('barang').doc(editBarangId).update(updateData);
+          closeEditModal();
+          alert('Barang berhasil diperbarui!');
+        };
+        reader.readAsDataURL(gambarFile);
+      } else {
+        // Update tanpa ganti gambar
+        await db.collection('barang').doc(editBarangId).update(updateData);
+        closeEditModal();
+        alert('Barang berhasil diperbarui!');
+      }
+    } catch (error) {
+      console.error('Error update barang:', error);
+      alert('Gagal memperbarui barang: ' + error.message);
+    }
+  }
+
+  // TUTUP MODAL EDIT
+  function closeEditModal() {
+    document.getElementById('editModal').classList.add('hidden');
+    editBarangId = null;
+    editBarangData = null;
+    document.getElementById('editNama').value = '';
+    document.getElementById('editJumlah').value = '';
+    document.getElementById('editKategori').value = '';
+    document.getElementById('editStokMinimal').value = '';
+    document.getElementById('editGambarPreview').innerHTML = '';
+    document.getElementById('editFileLabel').innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Ganti Gambar (opsional)';
+    document.getElementById('editGambar').value = '';
+  }
+
+  // HAPUS BARANG
+  async function hapusBarang(id) {
+    if (!confirm('Yakin ingin menghapus barang ini?')) return;
+    
+    try {
+      await db.collection('barang').doc(id).delete();
+      alert('Barang berhasil dihapus!');
+    } catch (error) {
+      console.error('Error hapus barang:', error);
+      alert('Gagal menghapus barang: ' + error.message);
+    }
+  }
+
+  // PINJAM BARANG
+  async function pinjamBarang() {
+    const selectBarang = document.getElementById('barangSelect');
+    const id = selectBarang.value;
+    const peminjam = document.getElementById('peminjam');
+    const jumlahPinjam = document.getElementById('jumlahPinjam');
+    
+    if (!id) {
+      alert('Pilih barang yang akan dipinjam!');
+      selectBarang.focus();
+      return;
+    }
+    
+    if (!peminjam.value.trim()) {
+      alert('Nama peminjam harus diisi!');
+      peminjam.focus();
+      return;
+    }
+    
+    const j = parseInt(jumlahPinjam.value);
+    if (!j || j <= 0) {
+      alert('Jumlah pinjaman harus lebih dari 0!');
+      jumlahPinjam.focus();
+      return;
+    }
+
+    try {
+      const docRef = db.collection('barang').doc(id);
+      const docSnap = await docRef.get();
+      
+      if (!docSnap.exists) {
+        alert('Barang tidak ditemukan!');
+        return;
+      }
+      
+      const data = docSnap.data();
+      
+      if (j > data.jumlah) {
+        alert(`Stok tidak mencukupi! Stok tersedia: ${data.jumlah}`);
+        return;
+      }
+
+      // Kurangi stok
+      await docRef.update({ 
+        jumlah: data.jumlah - j,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Catat peminjaman
+      await db.collection('pinjam').add({
+        nama: peminjam.value.trim(),
+        barang: data.nama,
+        jumlah: j,
+        kodeBarang: data.kode,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Reset form
+      peminjam.value = '';
+      jumlahPinjam.value = '';
+      selectBarang.value = '';
+      
+      alert('Peminjaman berhasil dicatat!');
+    } catch (error) {
+      console.error('Error pinjam barang:', error);
+      alert('Gagal melakukan peminjaman: ' + error.message);
+    }
+  }
+
+  // LOAD DATA REAL TIME
   function loadData() {
-    db.collection('barang').onSnapshot(snap => {
+    // Load barang
+    db.collection('barang').orderBy('createdAt', 'desc').onSnapshot(snap => {
       const tbody = document.getElementById('tabelBarang');
       const select = document.getElementById('barangSelect');
+      
       tbody.innerHTML = '';
-      select.innerHTML = '';
-      document.getElementById('totalBarang').innerText = snap.size;
+      select.innerHTML = '<option value="">-- Pilih Barang --</option>';
+      
       let totalStok = 0;
-
+      
       snap.forEach(doc => {
         const b = doc.data();
         totalStok += b.jumlah || 0;
+        
+        // Tampilkan di tabel
         tbody.innerHTML += `<tr>
-          <td><span style="background:#e0f2fe; padding:0.3rem 0.7rem; border-radius:2rem; font-weight:600;">${b.kode}</span></td>
-          <td><strong>${b.nama}</strong></td>
-          <td><span style="background:#f1f5f9; padding:0.2rem 0.9rem; border-radius:2rem;">${b.jumlah}</span></td>
+          <td><span style="background:#e0f2fe; padding:0.3rem 0.7rem; border-radius:2rem; font-weight:600;">${b.kode || '-'}</span></td>
+          <td><strong>${b.nama || '-'}</strong></td>
+          <td><span style="background:${b.jumlah <= (b.stokMinimal || 5) ? '#fee2e2' : '#f1f5f9'}; padding:0.2rem 0.9rem; border-radius:2rem;">${b.jumlah || 0}</span></td>
+          <td>${b.kategori || 'Umum'}</td>
+          <td>${b.stokMinimal || 5}</td>
           <td>${b.gambar ? `<img src="${b.gambar}" class="img-preview">` : '-'}</td>
-          <td><button class="btn-danger" onclick="hapusBarang('${doc.id}')" style="padding:0.4rem 1.2rem;"><i class="fas fa-trash"></i> Hapus</button></td>
+          <td>
+            <button class="btn-edit" onclick="editBarang('${doc.id}')" style="padding:0.4rem 1.2rem; margin-right: 0.5rem;">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="btn-danger" onclick="hapusBarang('${doc.id}')" style="padding:0.4rem 1.2rem;">
+              <i class="fas fa-trash"></i> Hapus
+            </button>
+          </td>
         </tr>`;
-        select.innerHTML += `<option value="${doc.id}">${b.nama} (stok ${b.jumlah})</option>`;
+        
+        // Tampilkan di select peminjaman (hanya yang stok > 0)
+        if (b.jumlah > 0) {
+          select.innerHTML += `<option value="${doc.id}">${b.nama} (stok: ${b.jumlah})</option>`;
+        }
       });
+      
+      document.getElementById('totalBarang').innerText = snap.size;
       document.getElementById('totalStokBersih').innerText = totalStok;
+      
+    }, error => {
+      console.error('Error load barang:', error);
     });
 
-    db.collection('pinjam').onSnapshot(snap => {
+    // Load peminjaman
+    db.collection('pinjam').orderBy('timestamp', 'desc').limit(50).onSnapshot(snap => {
       const tbody = document.getElementById('tabelPinjam');
       tbody.innerHTML = '';
       document.getElementById('totalPinjam').innerText = snap.size;
+      
       snap.forEach(doc => {
         const p = doc.data();
-        tbody.innerHTML += `<tr><td><i class="fas fa-user-graduate" style="color:#0284c7;"></i> ${p.nama}</td><td>${p.barang}</td><td><span style="background:#fef3c7; padding:0.2rem 0.9rem; border-radius:2rem;">${p.jumlah}</span></td></tr>`;
+        const waktu = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleString('id-ID') : '-';
+        
+        tbody.innerHTML += `<tr>
+          <td><i class="fas fa-user-graduate" style="color:#0284c7;"></i> ${p.nama || '-'}</td>
+          <td>${p.barang || '-'}</td>
+          <td><span style="background:#fef3c7; padding:0.2rem 0.9rem; border-radius:2rem;">${p.jumlah || 0}</span></td>
+          <td><span style="color:#64748b; font-size: 0.85rem;">${waktu}</span></td>
+        </tr>`;
       });
+      
+    }, error => {
+      console.error('Error load peminjaman:', error);
     });
   }
 
-  async function hapusBarang(id) {
-    if (!confirm('Yakin menghapus barang ini?')) return;
-    await db.collection('barang').doc(id).delete();
-  }
-
-  async function pinjamBarang() {
-    const id = document.getElementById('barangSelect').value;
-    const peminjam = document.getElementById('peminjam');
-    const jumlahPinjam = document.getElementById('jumlahPinjam');
-    const j = parseInt(jumlahPinjam.value);
-    if (!id || !peminjam.value || !j) return alert('Lengkapi data peminjaman!');
-
-    const docRef = db.collection('barang').doc(id);
-    const data = (await docRef.get()).data();
-    if (j > data.jumlah) return alert('Stok tidak mencukupi');
-
-    await docRef.update({ jumlah: data.jumlah - j });
-    await db.collection('pinjam').add({
-      nama: peminjam.value,
-      barang: data.nama,
-      jumlah: j
-    });
-    peminjam.value = '';
-    jumlahPinjam.value = '';
-  }
-
+  // CETAK PDF - VERSI A4 PORTRAIT SUPER RAPIH!
   async function cetakPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text('LAPORAN INVENTARIS SD LAZUARDI', 20, 20);
-    doc.setFontSize(11);
-    doc.text(`Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 20, 30);
-    let y = 45;
-    const snapshot = await db.collection('barang').get();
-    let no = 1;
-    snapshot.forEach(d => {
-      const b = d.data();
-      doc.text(`${no}. ${b.kode} - ${b.nama}  |  Jumlah: ${b.jumlah}`, 20, y);
+    try {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      // ============ HEADER KOP SURAT ============
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(2, 132, 199);
+      doc.text('SD LAZUARDI', 105, 20, { align: 'center' });
+      
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(71, 85, 105);
+      doc.text('LAPORAN INVENTARIS BARANG', 105, 30, { align: 'center' });
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Jl. Pendidikan No. 123, Jakarta | Telp. (021) 1234-5678', 105, 38, { align: 'center' });
+      
+      // Garis kop
+      doc.setDrawColor(2, 132, 199);
+      doc.setLineWidth(0.5);
+      doc.line(20, 45, 190, 45);
+      
+      // Tanggal cetak
+      doc.setFontSize(9);
+      doc.setTextColor(71, 85, 105);
+      doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })}`, 20, 55);
+      
+      doc.text(`Waktu: ${new Date().toLocaleTimeString('id-ID')}`, 20, 62);
+      
+      // ============ HEADER TABEL ============
+      let y = 75;
+      
+      // Header background
+      doc.setFillColor(2, 132, 199);
+      doc.rect(20, y-5, 170, 10, 'F');
+      
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(255, 255, 255);
+      
+      doc.text('No', 22, y);
+      doc.text('Kode', 38, y);
+      doc.text('Nama Barang', 60, y);
+      doc.text('Jumlah', 115, y);
+      doc.text('Kategori', 135, y);
+      doc.text('Status', 165, y);
+      
       y += 8;
-      no++;
-    });
-    if (y > 270) y = 20; // handle page
-    doc.save('Laporan_Inventaris_SD.pdf');
+      
+      // ============ DATA BARANG ============
+      const snapshot = await db.collection('barang').orderBy('kode').get();
+      let no = 1;
+      let totalJumlah = 0;
+      let stokHabis = 0;
+      let stokMenipis = 0;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(15, 23, 42);
+      
+      let rowColor = false;
+      
+      for (const docSnap of snapshot.docs) {
+        const b = docSnap.data();
+        totalJumlah += b.jumlah || 0;
+        
+        // Hitung status stok
+        if (b.jumlah === 0) {
+          stokHabis++;
+        } else if (b.jumlah <= (b.stokMinimal || 5)) {
+          stokMenipis++;
+        }
+        
+        // Cek page baru
+        if (y > 250) {
+          doc.addPage();
+          y = 30;
+          
+          // Header tabel di halaman baru
+          doc.setFillColor(2, 132, 199);
+          doc.rect(20, y-5, 170, 10, 'F');
+          
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(255, 255, 255);
+          doc.text('No', 22, y);
+          doc.text('Kode', 38, y);
+          doc.text('Nama Barang', 60, y);
+          doc.text('Jumlah', 115, y);
+          doc.text('Kategori', 135, y);
+          doc.text('Status', 165, y);
+          
+          y += 8;
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(15, 23, 42);
+          rowColor = false;
+        }
+        
+        // Background selang-seling
+        if (rowColor) {
+          doc.setFillColor(241, 245, 249);
+          doc.rect(20, y-4, 170, 7, 'F');
+        }
+        
+        // Potong nama barang kalau kepanjangan
+        let namaBarang = b.nama || '-';
+        if (namaBarang.length > 25) {
+          namaBarang = namaBarang.substring(0, 22) + '...';
+        }
+        
+        // Status stok
+        let status = 'Normal';
+        let statusColor = [34, 197, 94]; // Hijau
+        
+        if (b.jumlah === 0) {
+          status = 'Habis';
+          statusColor = [239, 68, 68]; // Merah
+        } else if (b.jumlah <= (b.stokMinimal || 5)) {
+          status = 'Menipis';
+          statusColor = [245, 158, 11]; // Oranye
+        }
+        
+        // Tulis data
+        doc.text(no.toString(), 22, y);
+        doc.text(b.kode || '-', 38, y);
+        doc.text(namaBarang, 60, y);
+        doc.text(b.jumlah?.toString() || '0', 115, y);
+        doc.text(b.kategori || 'Umum', 135, y);
+        
+        // Status dengan warna
+        doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+        doc.text(status, 165, y);
+        doc.setTextColor(15, 23, 42); // Reset warna
+        
+        y += 7;
+        no++;
+        rowColor = !rowColor;
+      }
+      
+      // ============ FOOTER RINGKASAN ============
+      y += 8;
+      
+      // Kotak ringkasan
+      doc.setFillColor(240, 249, 255);
+      doc.setDrawColor(2, 132, 199);
+      doc.roundedRect(20, y, 170, 45, 3, 3, 'FD');
+      
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(2, 132, 199);
+      doc.text('RINGKASAN INVENTARIS', 105, y+8, { align: 'center' });
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(15, 23, 42);
+      
+      // Kolom kiri
+      doc.text(`Total Jenis Barang : ${snapshot.size}`, 30, y+18);
+      doc.text(`Total Seluruh Stok : ${totalJumlah}`, 30, y+26);
+      doc.text(`Rata-rata Stok : ${Math.round(totalJumlah / snapshot.size) || 0}`, 30, y+34);
+      
+      // Kolom kanan
+      doc.text(`Barang Habis : ${stokHabis}`, 120, y+18);
+      doc.text(`Stok Menipis : ${stokMenipis}`, 120, y+26);
+      doc.text(`Stok Normal : ${snapshot.size - stokHabis - stokMenipis}`, 120, y+34);
+      
+      // ============ TANDA TANGAN ============
+      y += 65;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105);
+      
+      // Nama admin dari profil
+      const adminData = JSON.parse(localStorage.getItem('adminData') || '{}');
+      const adminNama = adminData.nama || 'Admin SD Lazuardi';
+      
+      doc.text(`Jakarta, ${new Date().toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      })}`, 130, y);
+      
+      doc.text('Mengetahui,', 130, y+10);
+      doc.text('Kepala SD Lazuardi', 130, y+20);
+      doc.text('_____________________', 130, y+35);
+      doc.text('Dra. Hj. Siti Aminah, M.Pd.', 130, y+42);
+      doc.text('NIP. 196512311990032001', 130, y+48);
+      
+      // ============ SIMPAN PDF ============
+      doc.save('Laporan_Inventaris_SD_Lazuardi.pdf');
+      alert('✅ Laporan berhasil dicetak dalam format A4!');
+      
+    } catch (error) {
+      console.error('Error cetak PDF:', error);
+      alert('❌ Gagal mencetak PDF: ' + error.message);
+    }
   }
 
+  // Jalankan cekLogin saat halaman dimuat
   window.onload = cekLogin;
 </script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
