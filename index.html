@@ -801,11 +801,11 @@
             </div>
             <div>
               <div class="profile-detail-label"><i class="fas fa-map-marker-alt"></i> Alamat</div>
-              <input type="text" id="editAddress" placeholder="Alamat" value="Jl. Pendidikan No. 123, Jakarta">
+              <input type="text" id="editAddress" placeholder="Alamat" value="Griya Cinere I, Jalan Garuda Ujung No.35, Limo, Kota Depok, Jawa Barat (16515)">
             </div>
             <div style="grid-column: span 2;">
               <div class="profile-detail-label"><i class="fas fa-info-circle"></i> Bio / Tentang</div>
-              <textarea id="editBio" placeholder="Ceritakan tentang diri Anda">Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.</textarea>
+              <textarea id="editBio" placeholder="Ceritakan tentang diri Anda"></textarea>
             </div>
           </div>
           
@@ -849,7 +849,7 @@
               </div>
               <div class="stat-content">
                 <h4>Terdaftar</h4>
-                <span id="memberSince">2024</span>
+                <span id="memberSince">2026</span>
               </div>
             </div>
           </div>
@@ -958,8 +958,8 @@
         nama: 'Admin SD Lazuardi',
         email: 'admin@lazuardi.sch.id',
         phone: '0812-3456-7890',
-        address: 'Jl. Pendidikan No. 123, Jakarta',
-        bio: 'Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.',
+        address: 'Griya Cinere I, Jalan Garuda Ujung No.35, Limo, Kota Depok, Jawa Barat (16515)',
+        bio: null,
         photo: null
       }));
       cekLogin();
@@ -1035,8 +1035,8 @@
     document.getElementById('editFullName').value = adminData.nama || 'Admin SD Lazuardi';
     document.getElementById('editEmail').value = adminData.email || 'admin@lazuardi.sch.id';
     document.getElementById('editPhone').value = adminData.phone || '0812-3456-7890';
-    document.getElementById('editAddress').value = adminData.address || 'Jl. Pendidikan No. 123, Jakarta';
-    document.getElementById('editBio').value = adminData.bio || 'Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.';
+    document.getElementById('editAddress').value = adminData.address || 'Griya Cinere I, Jalan Garuda Ujung No.35, Limo, Kota Depok, Jawa Barat (16515)';
+    document.getElementById('editBio').value = adminData.bio || '';
     document.getElementById('profileBio').innerText = adminData.bio || 'Pengelola inventaris sekolah dasar Lazuardi';
     
     // Set foto profil
