@@ -9,6 +9,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+  <!-- QR CODE LIBRARY -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
   <!-- FONTS & ICONS -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -257,7 +260,7 @@
       min-height: 100px;
     }
 
-    .btn, .btn-warning, .btn-danger, .btn-edit, .btn-success {
+    .btn, .btn-warning, .btn-danger, .btn-edit, .btn-success, .btn-info {
       border: none;
       padding: 0.8rem 1.8rem;
       border-radius: 2rem;
@@ -316,6 +319,15 @@
     }
     .btn-success:hover {
       background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .btn-info {
+      background: #06b6d4;
+      color: white;
+    }
+    .btn-info:hover {
+      background: #0891b2;
       transform: translateY(-2px);
     }
 
@@ -572,12 +584,108 @@
       flex-wrap: wrap;
     }
 
+    /* QR Code Styles */
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 1.5rem;
+      border: 2px dashed #0284c7;
+    }
+
+    #qrCode {
+      width: 200px;
+      height: 200px;
+      margin: 1rem 0;
+      padding: 1rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px -5px rgba(2,132,199,0.2);
+    }
+
+    .qr-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .qr-note {
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: center;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      background: #fff3cd;
+      border-radius: 2rem;
+      color: #856404;
+    }
+
+    .qr-note i {
+      margin-right: 0.3rem;
+    }
+
     @media (max-width: 900px) {
       .sidebar { width: 100px; padding: 1rem; }
       .sidebar h2 span { display: none; }
       .menu a span { display: none; }
       .content { margin-left: 100px; width: calc(100% - 100px); }
       .profile-header { flex-direction: column; text-align: center; }
+    }
+
+    /* Mobile Form Styles */
+    .mobile-form-container {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #e0f2fe 0%, #bae6fd 100%);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-form-card {
+      background: white;
+      border-radius: 2rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+
+    .mobile-form-card h2 {
+      color: #075985;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-form-card .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .mobile-form-card label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 0.3rem;
+    }
+
+    .mobile-success {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .mobile-success i {
+      font-size: 4rem;
+      color: #10b981;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -727,13 +835,36 @@
     <div id="pinjam" class="hidden">
       <div class="card">
         <h3><i class="fas fa-pen"></i> Form Peminjaman</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
-          <input id="peminjam" placeholder="Nama peminjam">
-          <select id="barangSelect" style="margin-bottom: 0;"></select>
-          <input id="jumlahPinjam" type="number" placeholder="Jumlah dipinjam">
-          <button class="btn-warning" onclick="pinjamBarang()" style="margin-bottom: 0;">
-            <i class="fas fa-hand-holding-heart"></i> Pinjam
-          </button>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+          <!-- Form Peminjaman -->
+          <div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;">
+              <input id="peminjam" placeholder="Nama peminjam">
+              <select id="barangSelect" style="margin-bottom: 0;"></select>
+              <input id="jumlahPinjam" type="number" placeholder="Jumlah dipinjam">
+              <button class="btn-warning" onclick="pinjamBarang()" style="margin-bottom: 0;">
+                <i class="fas fa-hand-holding-heart"></i> Pinjam
+              </button>
+            </div>
+          </div>
+          
+          <!-- QR Code Section -->
+          <div class="qr-container">
+            <i class="fas fa-qrcode" style="font-size: 2rem; color: #0284c7; margin-bottom: 0.5rem;"></i>
+            <h4 style="color: #075985; margin-bottom: 0.5rem;">QR Peminjaman</h4>
+            <div id="qrCode"></div>
+            <div class="qr-actions">
+              <button class="btn-info btn-sm" onclick="downloadQR()">
+                <i class="fas fa-download"></i> Download
+              </button>
+              <button class="btn-success btn-sm" onclick="printQR()">
+                <i class="fas fa-print"></i> Print
+              </button>
+            </div>
+            <div class="qr-note">
+              <i class="fas fa-mobile-alt"></i> Scan QR dengan HP untuk akses form peminjaman
+            </div>
+          </div>
         </div>
       </div>
 
@@ -797,15 +928,15 @@
             </div>
             <div>
               <div class="profile-detail-label"><i class="fas fa-phone"></i> Nomor HP</div>
-              <input type="text" id="editPhone" placeholder="Nomor HP" value="021 7534 841">
+              <input type="text" id="editPhone" placeholder="Nomor HP" value="0812-3456-7890">
             </div>
             <div>
               <div class="profile-detail-label"><i class="fas fa-map-marker-alt"></i> Alamat</div>
-              <input type="text" id="editAddress" placeholder="Alamat" value="Griya Cinere I, Jalan Garuda Ujung No.35, Limo, Kota Depok, Jawa Barat (16515)">
+              <input type="text" id="editAddress" placeholder="Alamat" value="Jl. Pendidikan No. 123, Jakarta">
             </div>
             <div style="grid-column: span 2;">
               <div class="profile-detail-label"><i class="fas fa-info-circle"></i> Bio / Tentang</div>
-              <textarea id="editBio" placeholder="Ceritakan tentang diri Anda"></textarea>
+              <textarea id="editBio" placeholder="Ceritakan tentang diri Anda">Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.</textarea>
             </div>
           </div>
           
@@ -849,11 +980,73 @@
               </div>
               <div class="stat-content">
                 <h4>Terdaftar</h4>
-                <span id="memberSince">2026</span>
+                <span id="memberSince">2024</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR UNTUK MOBILE (akan tampil saat scan QR) -->
+<div id="mobileFormModal" class="modal hidden">
+  <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-mobile-alt"></i> Form Peminjaman Mobile</h3>
+      <button class="close-btn" onclick="closeMobileForm()">&times;</button>
+    </div>
+    <div id="mobileFormContent">
+      <!-- Akan diisi oleh JavaScript -->
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE FORM PAGE (akan tampil di HP saat scan QR) -->
+<div id="mobileFormPage" style="display: none;">
+  <div class="mobile-form-container">
+    <div class="mobile-form-card">
+      <h2>
+        <i class="fas fa-school" style="color: #0284c7;"></i>
+        SD Lazuardi - Peminjaman
+      </h2>
+      
+      <div id="mobilePinjamForm">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Nama Peminjam</label>
+          <input type="text" id="mobilePeminjam" placeholder="Masukkan nama lengkap">
+        </div>
+        
+        <div class="form-group">
+          <label><i class="fas fa-box"></i> Pilih Barang</label>
+          <select id="mobileBarangSelect">
+            <option value="">-- Loading barang... --</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label><i class="fas fa-sort-numeric-up"></i> Jumlah</label>
+          <input type="number" id="mobileJumlahPinjam" placeholder="Masukkan jumlah" min="1">
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button class="btn-warning" onclick="mobilePinjamBarang()" style="flex: 2;">
+            <i class="fas fa-hand-holding-heart"></i> Ajukan Peminjaman
+          </button>
+          <button class="btn-edit" onclick="window.location.href=window.location.origin" style="flex: 1;">
+            <i class="fas fa-home"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div id="mobileSuccessMessage" style="display: none;" class="mobile-success">
+        <i class="fas fa-check-circle"></i>
+        <h3 style="color: #065f46; margin-bottom: 0.5rem;">Peminjaman Berhasil!</h3>
+        <p style="color: #475569; margin-bottom: 1.5rem;">Terima kasih, data peminjaman telah tercatat.</p>
+        <button class="btn-success" onclick="resetMobileForm()" style="width: 100%;">
+          <i class="fas fa-redo"></i> Pinjam Lagi
+        </button>
       </div>
     </div>
   </div>
@@ -945,6 +1138,21 @@
   // Variabel global
   let editBarangId = null;
   let editBarangData = null;
+  let currentQRUrl = '';
+
+  // Cek apakah ini akses dari mobile (QR)
+  function checkMobileAccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'mobile-pinjam') {
+      // Sembunyikan login dan app, tampilkan mobile form
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('mobileFormPage').style.display = 'block';
+      loadMobileBarang();
+      return true;
+    }
+    return false;
+  }
 
   // LOGIN
   function login() {
@@ -957,9 +1165,9 @@
       localStorage.setItem('adminData', JSON.stringify({
         nama: 'Admin SD Lazuardi',
         email: 'admin@lazuardi.sch.id',
-        phone: '021 7534 841',
-        address: 'Griya Cinere I, Jalan Garuda Ujung No.35, Limo, Kota Depok, Jawa Barat (16515)',
-        bio: null,
+        phone: '0812-3456-7890',
+        address: 'Jl. Pendidikan No. 123, Jakarta',
+        bio: 'Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.',
         photo: null
       }));
       cekLogin();
@@ -991,6 +1199,7 @@
       });
       
       loadData();
+      generateQRCode();
     }
   }
 
@@ -1012,6 +1221,11 @@
     if (id === 'profil') {
       updateProfilStats();
     }
+    
+    // Generate ulang QR jika halaman peminjaman dibuka
+    if (id === 'pinjam') {
+      generateQRCode();
+    }
   }
 
   function updateFileName(input, labelId) {
@@ -1021,6 +1235,143 @@
         label.innerHTML = `<i class="fas fa-check-circle"></i> ${input.files[0].name}`;
       }
     }
+  }
+
+  // FUNGSI QR CODE
+  function generateQRCode() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const qrUrl = baseUrl + '?mode=mobile-pinjam';
+    currentQRUrl = qrUrl;
+    
+    // Generate QR Code
+    QRCode.toCanvas(document.getElementById('qrCode'), qrUrl, {
+      width: 200,
+      margin: 2,
+      color: {
+        dark: '#075985',
+        light: '#ffffff'
+      }
+    }, function(error) {
+      if (error) console.error('Error generating QR:', error);
+    });
+  }
+
+  function downloadQR() {
+    const canvas = document.getElementById('qrCode');
+    const link = document.createElement('a');
+    link.download = 'qr-peminjaman-sd-lazuardi.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  function printQR() {
+    const canvas = document.getElementById('qrCode');
+    const win = window.open('');
+    win.document.write('<html><head><title>Print QR Code</title></head><body style="text-align: center; padding: 50px;">');
+    win.document.write('<h2 style="color: #075985;">SD Lazuardi</h2>');
+    win.document.write('<h3 style="color: #0284c7;">Scan untuk Peminjaman</h3>');
+    win.document.write('<img src="' + canvas.toDataURL() + '" style="width: 300px; height: 300px;">');
+    win.document.write('<p style="color: #64748b; margin-top: 20px;">' + currentQRUrl + '</p>');
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+  }
+
+  // FUNGSI MOBILE
+  function loadMobileBarang() {
+    const select = document.getElementById('mobileBarangSelect');
+    
+    db.collection('barang').where('jumlah', '>', 0).get().then(snapshot => {
+      select.innerHTML = '<option value="">-- Pilih Barang --</option>';
+      snapshot.forEach(doc => {
+        const b = doc.data();
+        select.innerHTML += `<option value="${doc.id}">${b.nama} (Stok: ${b.jumlah})</option>`;
+      });
+    }).catch(error => {
+      console.error('Error load mobile barang:', error);
+      select.innerHTML = '<option value="">Error loading barang</option>';
+    });
+  }
+
+  async function mobilePinjamBarang() {
+    const select = document.getElementById('mobileBarangSelect');
+    const id = select.value;
+    const peminjam = document.getElementById('mobilePeminjam');
+    const jumlahPinjam = document.getElementById('mobileJumlahPinjam');
+    
+    if (!id) {
+      alert('Pilih barang yang akan dipinjam!');
+      select.focus();
+      return;
+    }
+    
+    if (!peminjam.value.trim()) {
+      alert('Nama peminjam harus diisi!');
+      peminjam.focus();
+      return;
+    }
+    
+    const j = parseInt(jumlahPinjam.value);
+    if (!j || j <= 0) {
+      alert('Jumlah pinjaman harus lebih dari 0!');
+      jumlahPinjam.focus();
+      return;
+    }
+
+    try {
+      const docRef = db.collection('barang').doc(id);
+      const docSnap = await docRef.get();
+      
+      if (!docSnap.exists) {
+        alert('Barang tidak ditemukan!');
+        return;
+      }
+      
+      const data = docSnap.data();
+      
+      if (j > data.jumlah) {
+        alert(`Stok tidak mencukupi! Stok tersedia: ${data.jumlah}`);
+        return;
+      }
+
+      // Kurangi stok
+      await docRef.update({ 
+        jumlah: data.jumlah - j,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Catat peminjaman
+      await db.collection('pinjam').add({
+        nama: peminjam.value.trim(),
+        barang: data.nama,
+        jumlah: j,
+        kodeBarang: data.kode,
+        status: 'dipinjam',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        source: 'mobile'
+      });
+      
+      // Tampilkan pesan sukses
+      document.getElementById('mobilePinjamForm').style.display = 'none';
+      document.getElementById('mobileSuccessMessage').style.display = 'block';
+      
+    } catch (error) {
+      console.error('Error mobile pinjam:', error);
+      alert('Gagal melakukan peminjaman: ' + error.message);
+    }
+  }
+
+  function resetMobileForm() {
+    document.getElementById('mobilePinjamForm').style.display = 'block';
+    document.getElementById('mobileSuccessMessage').style.display = 'none';
+    document.getElementById('mobilePeminjam').value = '';
+    document.getElementById('mobileJumlahPinjam').value = '';
+    document.getElementById('mobileBarangSelect').value = '';
+    loadMobileBarang(); // Refresh stok
+  }
+
+  function closeMobileForm() {
+    document.getElementById('mobileFormModal').classList.add('hidden');
   }
 
   // FUNGSI PROFIL
@@ -1034,9 +1385,9 @@
     document.getElementById('profileFullName').innerText = adminData.nama || 'Admin SD Lazuardi';
     document.getElementById('editFullName').value = adminData.nama || 'Admin SD Lazuardi';
     document.getElementById('editEmail').value = adminData.email || 'admin@lazuardi.sch.id';
-    document.getElementById('editPhone').value = adminData.phone || '021 7534 841';
-    document.getElementById('editAddress').value = adminData.address || 'Griya Cinere I, Jalan Garuda Ujung No.35, Limo, Kota Depok, Jawa Barat (16515)';
-    document.getElementById('editBio').value = adminData.bio || '';
+    document.getElementById('editPhone').value = adminData.phone || '0812-3456-7890';
+    document.getElementById('editAddress').value = adminData.address || 'Jl. Pendidikan No. 123, Jakarta';
+    document.getElementById('editBio').value = adminData.bio || 'Pengelola inventaris sekolah dasar Lazuardi dengan pengalaman lebih dari 5 tahun.';
     document.getElementById('profileBio').innerText = adminData.bio || 'Pengelola inventaris sekolah dasar Lazuardi';
     
     // Set foto profil
@@ -1342,7 +1693,7 @@
     }
   }
 
-  // PINJAM BARANG
+  // PINJAM BARANG (WEB)
   async function pinjamBarang() {
     const selectBarang = document.getElementById('barangSelect');
     const id = selectBarang.value;
@@ -1578,7 +1929,7 @@
     });
   }
 
-  // CETAK PDF - VERSI A4 PORTRAIT SUPER RAPIH!
+  // CETAK PDF
   async function cetakPDF() {
     try {
       const { jsPDF } = window.jspdf;
@@ -1588,13 +1939,13 @@
         format: 'a4'
       });
       
-      // ============ HEADER KOP SURAT ===========
+      // Header
       doc.setFontSize(14);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(71, 85, 105);
       doc.text('LAPORAN INVENTARIS BARANG', 105, 30, { align: 'center' });
       
-      // Garis kop
+      // Garis
       doc.setDrawColor(2, 132, 199);
       doc.setLineWidth(0.5);
       doc.line(20, 45, 190, 45);
@@ -1611,10 +1962,9 @@
       
       doc.text(`Waktu: ${new Date().toLocaleTimeString('id-ID')}`, 20, 62);
       
-      // ============ HEADER TABEL ============
+      // Header tabel
       let y = 75;
       
-      // Header background
       doc.setFillColor(2, 132, 199);
       doc.rect(20, y-5, 170, 10, 'F');
       
@@ -1631,7 +1981,7 @@
       
       y += 8;
       
-      // ============ DATA BARANG ============
+      // Data barang
       const snapshot = await db.collection('barang').orderBy('kode').get();
       let no = 1;
       let totalJumlah = 0;
@@ -1648,22 +1998,17 @@
         const b = docSnap.data();
         totalJumlah += b.jumlah || 0;
         
-        // Hitung status stok
         if (b.jumlah === 0) {
           stokHabis++;
         } else if (b.jumlah <= (b.stokMinimal || 5)) {
           stokMenipis++;
         }
         
-        // Cek page baru
         if (y > 250) {
           doc.addPage();
           y = 30;
-          
-          // Header tabel di halaman baru
           doc.setFillColor(2, 132, 199);
           doc.rect(20, y-5, 170, 10, 'F');
-          
           doc.setFont('helvetica', 'bold');
           doc.setTextColor(255, 255, 255);
           doc.text('No', 22, y);
@@ -1672,58 +2017,50 @@
           doc.text('Jumlah', 115, y);
           doc.text('Kategori', 135, y);
           doc.text('Status', 165, y);
-          
           y += 8;
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(15, 23, 42);
           rowColor = false;
         }
         
-        // Background selang-seling
         if (rowColor) {
           doc.setFillColor(241, 245, 249);
           doc.rect(20, y-4, 170, 7, 'F');
         }
         
-        // Potong nama barang kalau kepanjangan
         let namaBarang = b.nama || '-';
         if (namaBarang.length > 25) {
           namaBarang = namaBarang.substring(0, 22) + '...';
         }
         
-        // Status stok
         let status = 'Normal';
-        let statusColor = [34, 197, 94]; // Hijau
+        let statusColor = [34, 197, 94];
         
         if (b.jumlah === 0) {
           status = 'Habis';
-          statusColor = [239, 68, 68]; // Merah
+          statusColor = [239, 68, 68];
         } else if (b.jumlah <= (b.stokMinimal || 5)) {
           status = 'Menipis';
-          statusColor = [245, 158, 11]; // Oranye
+          statusColor = [245, 158, 11];
         }
         
-        // Tulis data
         doc.text(no.toString(), 22, y);
         doc.text(b.kode || '-', 38, y);
         doc.text(namaBarang, 60, y);
         doc.text(b.jumlah?.toString() || '0', 115, y);
         doc.text(b.kategori || 'Umum', 135, y);
         
-        // Status dengan warna
         doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
         doc.text(status, 165, y);
-        doc.setTextColor(15, 23, 42); // Reset warna
+        doc.setTextColor(15, 23, 42);
         
         y += 7;
         no++;
         rowColor = !rowColor;
       }
       
-      // ============ FOOTER RINGKASAN ============
       y += 8;
       
-      // Kotak ringkasan
       doc.setFillColor(240, 249, 255);
       doc.setDrawColor(2, 132, 199);
       doc.roundedRect(20, y, 170, 45, 3, 3, 'FD');
@@ -1737,26 +2074,20 @@
       doc.setFontSize(9);
       doc.setTextColor(15, 23, 42);
       
-      // Kolom kiri
       doc.text(`Total Jenis Barang : ${snapshot.size}`, 30, y+18);
       doc.text(`Total Seluruh Stok : ${totalJumlah}`, 30, y+26);
       doc.text(`Rata-rata Stok : ${Math.round(totalJumlah / snapshot.size) || 0}`, 30, y+34);
-      
-      // Kolom kanan
       doc.text(`Barang Habis : ${stokHabis}`, 120, y+18);
       doc.text(`Stok Menipis : ${stokMenipis}`, 120, y+26);
       doc.text(`Stok Normal : ${snapshot.size - stokHabis - stokMenipis}`, 120, y+34);
       
-      // ============ TANDA TANGAN ============
       y += 65;
       
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
       doc.setTextColor(71, 85, 105);
       
-      // Nama admin dari profil
       const adminData = JSON.parse(localStorage.getItem('adminData') || '{}');
-      const adminNama = adminData.nama || 'Admin SD Lazuardi';
       
       doc.text(`Jakarta, ${new Date().toLocaleDateString('id-ID', {
         day: 'numeric',
@@ -1769,7 +2100,6 @@
       doc.text('_____________________', 130, y+35);
       doc.text('Sari Kusuma Dewi', 130, y+42);
       
-      // ============ SIMPAN PDF ============
       doc.save('Laporan_Inventaris_SD_Lazuardi.pdf');
       alert('✅ Laporan berhasil dicetak dalam format A4!');
       
@@ -1780,7 +2110,11 @@
   }
 
   // Jalankan cekLogin saat halaman dimuat
-  window.onload = cekLogin;
+  window.onload = function() {
+    if (!checkMobileAccess()) {
+      cekLogin();
+    }
+  };
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
