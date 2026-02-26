@@ -1457,20 +1457,11 @@
         format: 'a4'
       });
       
-      // ============ HEADER KOP SURAT ============
-      doc.setFontSize(22);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(2, 132, 199);
-      doc.text('SD LAZUARDI', 105, 20, { align: 'center' });
-      
+      // ============ HEADER KOP SURAT ===========
       doc.setFontSize(14);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(71, 85, 105);
       doc.text('LAPORAN INVENTARIS BARANG', 105, 30, { align: 'center' });
-      
-      doc.setFontSize(10);
-      doc.setTextColor(100, 116, 139);
-      doc.text('Jl. Pendidikan No. 123, Jakarta | Telp. (021) 1234-5678', 105, 38, { align: 'center' });
       
       // Garis kop
       doc.setDrawColor(2, 132, 199);
@@ -1643,10 +1634,9 @@
       })}`, 130, y);
       
       doc.text('Mengetahui,', 130, y+10);
-      doc.text('Kepala SD Lazuardi', 130, y+20);
+      doc.text('Kepala Sekolah SD Lazuardi', 130, y+20);
       doc.text('_____________________', 130, y+35);
-      doc.text('Dra. Hj. Siti Aminah, M.Pd.', 130, y+42);
-      doc.text('NIP. 196512311990032001', 130, y+48);
+      doc.text('Sari Kusuma Dewi', 130, y+42);
       
       // ============ SIMPAN PDF ============
       doc.save('Laporan_Inventaris_SD_Lazuardi.pdf');
