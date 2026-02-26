@@ -1283,7 +1283,13 @@
 }
 
   function downloadQR() {
-    const canvas = document.getElementById('qrCode');
+    const canvas = document.querySelector('#qrCode canvas');
+  
+    if (!canvas) {
+      alert('QR belum tersedia!');
+      return;
+    }
+  
     const link = document.createElement('a');
     link.download = 'qr-peminjaman-sd-lazuardi.png';
     link.href = canvas.toDataURL('image/png');
@@ -1291,14 +1297,21 @@
   }
 
   function printQR() {
-    const canvas = document.getElementById('qrCode');
+    const canvas = document.querySelector('#qrCode canvas');
+    if (!canvas) return;
+  
     const win = window.open('');
-    win.document.write('<html><head><title>Print QR Code</title></head><body style="text-align: center; padding: 50px;">');
-    win.document.write('<h2 style="color: #075985;">SD Lazuardi</h2>');
-    win.document.write('<h3 style="color: #0284c7;">Scan untuk Peminjaman</h3>');
-    win.document.write('<img src="' + canvas.toDataURL() + '" style="width: 300px; height: 300px;">');
-    win.document.write('<p style="color: #64748b; margin-top: 20px;">' + currentQRUrl + '</p>');
-    win.document.write('</body></html>');
+    win.document.write(`
+      <html>
+        <head><title>Print QR Code</title></head>
+        <body style="text-align:center; padding:50px;">
+          <h2 style="color:#075985;">SD Lazuardi</h2>
+          <h3 style="color:#0284c7;">Scan untuk Peminjaman</h3>
+          <img src="${canvas.toDataURL()}" style="width:300px;height:300px;">
+          <p style="color:#64748b; margin-top:20px;">${currentQRUrl}</p>
+        </body>
+      </html>
+    `);
     win.document.close();
     win.print();
   }
