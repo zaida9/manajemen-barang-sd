@@ -540,6 +540,38 @@
       color: #0f172a;
     }
 
+    /* Status badges */
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .status-dipinjam {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-dikembalikan {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .btn-sm {
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      border-radius: 1.5rem;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
     @media (max-width: 900px) {
       .sidebar { width: 100px; padding: 1rem; }
       .sidebar h2 span { display: none; }
@@ -715,6 +747,8 @@
                 <th>Barang</th>
                 <th>Jumlah</th>
                 <th>Waktu</th>
+                <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="tabelPinjam"></tbody>
@@ -1356,12 +1390,13 @@
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       
-      // Catat peminjaman
+      // Catat peminjaman dengan status default 'dipinjam'
       await db.collection('pinjam').add({
         nama: peminjam.value.trim(),
         barang: data.nama,
         jumlah: j,
         kodeBarang: data.kode,
+        status: 'dipinjam',
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
       
@@ -1374,6 +1409,80 @@
     } catch (error) {
       console.error('Error pinjam barang:', error);
       alert('Gagal melakukan peminjaman: ' + error.message);
+    }
+  }
+
+  // FUNGSI PENGEMBALIAN BARANG
+  async function kembalikanBarang(id) {
+    if (!confirm('Apakah barang ini sudah dikembalikan?')) return;
+    
+    try {
+      // Ambil data peminjaman
+      const pinjamDoc = await db.collection('pinjam').doc(id).get();
+      
+      if (!pinjamDoc.exists) {
+        alert('Data peminjaman tidak ditemukan!');
+        return;
+      }
+      
+      const pinjamData = pinjamDoc.data();
+      
+      // Cek apakah sudah dikembalikan sebelumnya
+      if (pinjamData.status === 'dikembalikan') {
+        alert('Barang ini sudah dikembalikan sebelumnya!');
+        return;
+      }
+      
+      // Kembalikan stok barang
+      const barangSnapshot = await db.collection('barang')
+        .where('kode', '==', pinjamData.kodeBarang)
+        .get();
+      
+      if (!barangSnapshot.empty) {
+        const barangDoc = barangSnapshot.docs[0];
+        const barangData = barangDoc.data();
+        
+        await barangDoc.ref.update({
+          jumlah: (barangData.jumlah || 0) + pinjamData.jumlah,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+      
+      // Update status peminjaman
+      await db.collection('pinjam').doc(id).update({
+        status: 'dikembalikan',
+        tanggalKembali: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      // Catat di riwayat pengembalian (opsional)
+      await db.collection('riwayat_pengembalian').add({
+        peminjamanId: id,
+        nama: pinjamData.nama,
+        barang: pinjamData.barang,
+        jumlah: pinjamData.jumlah,
+        tanggalPinjam: pinjamData.timestamp,
+        tanggalKembali: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      alert('✅ Barang berhasil dikembalikan!');
+      
+    } catch (error) {
+      console.error('Error pengembalian:', error);
+      alert('❌ Gagal memproses pengembalian: ' + error.message);
+    }
+  }
+
+  // FUNGSI HAPUS RIWAYAT PEMINJAMAN
+  async function hapusRiwayatPinjam(id) {
+    if (!confirm('Yakin ingin menghapus riwayat ini?')) return;
+    
+    try {
+      await db.collection('pinjam').doc(id).delete();
+      alert('Riwayat berhasil dihapus!');
+    } catch (error) {
+      console.error('Error hapus riwayat:', error);
+      alert('Gagal menghapus riwayat: ' + error.message);
     }
   }
 
@@ -1434,11 +1543,33 @@
         const p = doc.data();
         const waktu = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleString('id-ID') : '-';
         
+        // Tentukan status dan warna
+        const status = p.status || 'dipinjam';
+        const isReturned = status === 'dikembalikan';
+        const statusBadge = isReturned 
+          ? '<span style="background:#10b981; color:white; padding:0.2rem 0.9rem; border-radius:2rem; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Dikembalikan</span>'
+          : '<span style="background:#f59e0b; color:white; padding:0.2rem 0.9rem; border-radius:2rem; font-size:0.8rem;"><i class="fas fa-clock"></i> Dipinjam</span>';
+        
+        // Tombol aksi
+        const actionButton = isReturned
+          ? `<button class="btn-edit" onclick="hapusRiwayatPinjam('${doc.id}')" style="padding:0.3rem 1rem; font-size:0.8rem;" title="Hapus riwayat">
+              <i class="fas fa-trash-alt"></i>
+            </button>`
+          : `<button class="btn-success" onclick="kembalikanBarang('${doc.id}')" style="padding:0.3rem 1rem; font-size:0.8rem;">
+              <i class="fas fa-check"></i> Sudah Dikembalikan
+            </button>`;
+        
         tbody.innerHTML += `<tr>
           <td><i class="fas fa-user-graduate" style="color:#0284c7;"></i> ${p.nama || '-'}</td>
           <td>${p.barang || '-'}</td>
           <td><span style="background:#fef3c7; padding:0.2rem 0.9rem; border-radius:2rem;">${p.jumlah || 0}</span></td>
           <td><span style="color:#64748b; font-size: 0.85rem;">${waktu}</span></td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display:flex; gap:0.3rem;">
+              ${actionButton}
+            </div>
+          </td>
         </tr>`;
       });
       
