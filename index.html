@@ -1199,7 +1199,11 @@
       });
       
       loadData();
-      generateQRCode();
+
+      // kasih delay kecil biar DOM siap
+      setTimeout(() => {
+        generateQRCode();
+      }, 200);
     }
   }
 
@@ -1239,22 +1243,36 @@
 
   // FUNGSI QR CODE
   function generateQRCode() {
-    const baseUrl = window.location.origin + window.location.pathname;
-    const qrUrl = baseUrl + '?mode=mobile-pinjam';
-    currentQRUrl = qrUrl;
-    
-    // Generate QR Code
-    QRCode.toCanvas(document.getElementById('qrCode'), qrUrl, {
-      width: 200,
-      margin: 2,
-      color: {
-        dark: '#075985',
-        light: '#ffffff'
-      }
-    }, function(error) {
-      if (error) console.error('Error generating QR:', error);
-    });
+  const qrContainer = document.getElementById('qrCode');
+
+  if (!qrContainer) {
+    console.error('Element qrCode tidak ditemukan');
+    return;
   }
+
+  qrContainer.innerHTML = ''; // bersihkan dulu
+
+  const baseUrl = window.location.origin + window.location.pathname;
+  const qrUrl = baseUrl + '?mode=mobile-pinjam';
+  currentQRUrl = qrUrl;
+
+  // BIARKAN LIBRARY YANG MEMBUAT CANVAS
+  QRCode.toCanvas(qrUrl, {
+    width: 200,
+    margin: 2,
+    color: {
+      dark: '#075985',
+      light: '#ffffff'
+    }
+  }, function (error, canvas) {
+    if (error) {
+      console.error('Error generating QR:', error);
+      return;
+    }
+
+    qrContainer.appendChild(canvas); // tempelkan canvas ke div
+  });
+}
 
   function downloadQR() {
     const canvas = document.getElementById('qrCode');
